@@ -1,0 +1,19 @@
+{
+  "name": "ecommercerestapi",
+  "version": "1.0.0",
+  "description": "back end REST API for an online shop",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "author": "James Harradon",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "luxon": "^2.1.1",
+    "pg": "^8.7.1",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
+  }
+}
