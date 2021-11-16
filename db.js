@@ -10,8 +10,12 @@ const devConfig = {
 };
 
 // to use in production
+// process.env.DATABASE_URL comes from Heroku add-on to connect to a postgres cloud db
 const prodConfig = {
-    connectionString: process.env.DATABASE_URL // comes from Heroku add-on to connect to a postgres cloud db
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+      } 
 }
 
 const pool = new Pool(process.env.NODE_ENV === 'production' ? prodConfig : devConfig);
