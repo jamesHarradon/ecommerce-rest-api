@@ -7,6 +7,11 @@ const customersRouter = require('./routes/customers');
 const ordersRouter = require('./routes/orders');
 const productsRouter = require('./routes/products');
 
+//process.env.PORT
+
+
+
+
 const options = {
     definition: {
         openapi: "3.0.0",
@@ -31,6 +36,7 @@ const app = express();
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/customer', customersRouter);
 app.use('/products', productsRouter);

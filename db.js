@@ -1,11 +1,19 @@
 const Pool = require('pg').Pool;
 
-const pool = new Pool({
-    user: 'postgres',
-    password: 'stronghold',
-    database: 'ecommerce_project',
-    host: 'localhost',
-    port: 5432
-})
+// to use in development
+const devConfig = {
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DATABASE,
+    host: process.env.PG_HOST,
+    port: process.env.PG_HOST
+};
+
+// to use in production
+const prodConfig = {
+    connectionString: process.env.DATABASE_URL // comes from Heroku add-on to connect to a postgres cloud db
+}
+
+const pool = new Pool(process.env.NODE_ENV === 'production' ? prodConfig : devConfig);
 
 module.exports = pool;

@@ -26,7 +26,7 @@ cartRouter.post('/:customerId', async (req, res) => {
 });
 
 
-//delete cart (after cart is submitted the cart is no longer needed);
+//delete cart (after cart is submitted the temporary cart is no longer needed);
 cartRouter.delete('/:cartId', async (req, res) => {
     try {
         const { cartId } = req.params;

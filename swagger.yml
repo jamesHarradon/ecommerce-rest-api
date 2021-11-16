@@ -33,18 +33,25 @@ paths:
       requestBody:
         required: true
         content:
-          "application/json":
+          "application/x-www-form-urlencoded":
             schema: 
               type: object
               properties: 
                 first_name:   
-                  type: string
+                  type: string                  
                 last_name:
-                  type: string
+                  type: string                  
                 user_name: 
-                  type: string
+                  type: string                  
                 password: 
-                  type: string
+                  type: string   
+                  format: password
+              required: 
+                - first_name
+                - last_name
+                - user_name
+                - password
+                                
       responses:
         200:
           description: 200 Success
@@ -73,14 +80,14 @@ paths:
       tags: [Customer]
       description: "Login to a user account"
       produces:
-        - "application/json"
+        - "application/x-www-form-urlencoded"
       parameters:
         - name: user_name
           in: path
           required: true
         - name: password
           in: path
-          required: true
+          required: true              
       responses:
         200:
           description: 200 Success
