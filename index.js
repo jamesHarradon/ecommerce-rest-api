@@ -1,13 +1,12 @@
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const cors = require('cors');
 
 const cartRouter = require('./routes/cart');
 const customersRouter = require('./routes/customers');
 const ordersRouter = require('./routes/orders');
 const productsRouter = require('./routes/products');
-
-//process.env.PORT
 
 
 
@@ -36,6 +35,7 @@ const app = express();
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/customer', customersRouter);
