@@ -19,6 +19,10 @@ const options = {
             version: "1.0.0",
             description: "A simple e-commerce API"
         },
+        schema: [
+            "http",
+            "https"
+        ],
         servers: [
             {
                 url: "https://jims-ecommerce-rest-api.herokuapp.com/"
