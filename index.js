@@ -21,7 +21,7 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:3000"
+                url: "https://jims-ecommerce-rest-api.herokuapp.com/"
             }
         ],
     },
