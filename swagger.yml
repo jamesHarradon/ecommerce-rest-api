@@ -111,6 +111,10 @@ paths:
       description: "Add contact details for customer"
       produces:
         - "application/json"
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
       requestBody:
         required: true
         content:
