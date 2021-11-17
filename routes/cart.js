@@ -13,6 +13,45 @@ const deleteProduct = async (cartId, productId) => {
     return await pool.query('DELETE FROM carts_products WHERE cart_id = $1 AND product_id = $2', [cartId, productId]);
 }
 
+cartRouter.param('customerId', async (req, res, next) => {
+    try {
+        const { customerId } = req.params;
+        const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Customer with id ${customerId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+cartRouter.param('cartId', async (req, res, next) => {
+    try {
+        const { cartId } = req.params;
+        const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Cart with id ${cartId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+cartRouter.param('productId', async (req, res, next) => {
+    try {
+        const { productId } = req.params;
+        const exists = await pool.query('SELECT * FROM products WHERE id = $1', [productId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Product with id ${productId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
 // create new cart for customer 
 cartRouter.post('/new/:customerId', async (req, res) => {
     try {

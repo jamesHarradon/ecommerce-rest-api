@@ -3,6 +3,20 @@ const pool = require('../db');
 
 const productsRouter = express.Router();
 
+productsRouter.param('id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [id]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Product with id ${id} does not exist`});
+        };
+        req.product = exists;
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 //get all products (to display on page)
 productsRouter.get('/', async (req, res) => {
@@ -17,9 +31,7 @@ productsRouter.get('/', async (req, res) => {
 //get product by id
 productsRouter.get('/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const product = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
-        res.json(product.rows[0]);
+        res.json(req.product.rows[0]);
     } catch (err) {
         next(err);
     }

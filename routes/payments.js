@@ -4,6 +4,32 @@ const pool = require('../db');
 
 const paymentsRouter = express.Router();
 
+paymentsRouter.param('customerId', async (req, res, next) => {
+    try {
+        const { customerId } = req.params;
+        const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Customer with id ${customerId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+paymentsRouter.param('paymentId', async (req, res, next) => {
+    try {
+        const { paymentId } = req.params;
+        const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [paymentId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Payment data with id ${paymentId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
 //get payment details for customer by customerid
 paymentsRouter.get('/data/:customerId', async (req, res) => {
     try {

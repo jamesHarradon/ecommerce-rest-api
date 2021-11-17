@@ -8,6 +8,32 @@ const customersRouter = express.Router();
 
 //NOTE the question mark in checkExisting.rows?.length is known as optional chaining, and it will return undefined for an non-existant property from an API instead of an error messsage like 'cannot read property 'something' of undefined.'
 
+customersRouter.param('customerId', async (req, res, next) => {
+    try {
+        const { customerId } = req.params;
+        const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Customer with id ${customerId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+customersRouter.param('contactId', async (req, res, next) => {
+    try {
+        const { contactId } = req.params;
+        const exists = await pool.query('SELECT * FROM contacts WHERE id = $1', [contactId]);
+        if(!exists.rows?.length) {
+            throw new Error({status: 404, message: `Contact data with id ${contactId} does not exist`});
+        };
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 //create a new login
 customersRouter.post('/register', async (req, res) => {
@@ -60,6 +86,8 @@ customersRouter.get('/login/:username/:password', async (req, res) => {
         const userPassword = user.rows[0].password;
         if (decryptIsMatch(password, userPassword)) {
             res.json('You have successfully logged in')
+        } else {
+            throw new Error({status: 401, message: 'Log in data incorrect, please try again'})
         }
     } catch (err) {
         next(err);
