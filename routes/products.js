@@ -54,6 +54,11 @@ productsRouter.get('/search/:searchTerm', async (req, res) => {
     }
 });
 
+productsRouter.use((err, req, res, next) => {
+    const { message, status } = err;
+    return res.status(status).send({ message });
+})
+
 module.exports = productsRouter;
 
 
