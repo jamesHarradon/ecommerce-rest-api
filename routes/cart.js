@@ -18,7 +18,7 @@ cartRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Customer with id ${customerId} does not exist`});
+            throw new Error(`Customer with id ${customerId} does not exist`);
         };
         next();
     } catch (err) {
@@ -31,7 +31,7 @@ cartRouter.param('cartId', async (req, res, next) => {
         const { cartId } = req.params;
         const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Cart with id ${cartId} does not exist`});
+            throw new Error(`Cart with id ${cartId} does not exist`);
         };
         next();
     } catch (err) {
@@ -44,7 +44,7 @@ cartRouter.param('productId', async (req, res, next) => {
         const { productId } = req.params;
         const exists = await pool.query('SELECT * FROM products WHERE id = $1', [productId]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Product with id ${productId} does not exist`});
+            throw new Error(`Product with id ${productId} does not exist`);
         };
         next();
     } catch (err) {

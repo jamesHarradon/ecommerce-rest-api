@@ -8,7 +8,7 @@ productsRouter.param('id', async (req, res, next) => {
         const { id } = req.params;
         const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [id]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Product with id ${id} does not exist`});
+            throw new Error(`Product with id ${id} does not exist`);
         };
         req.product = exists;
         next();

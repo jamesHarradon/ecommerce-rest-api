@@ -13,7 +13,7 @@ customersRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Customer with id ${customerId} does not exist`});
+            throw new Error(`Customer with id ${customerId} does not exist`);
         };
         next();
     } catch (err) {
@@ -26,7 +26,7 @@ customersRouter.param('contactId', async (req, res, next) => {
         const { contactId } = req.params;
         const exists = await pool.query('SELECT * FROM contacts WHERE id = $1', [contactId]);
         if(!exists.rows?.length) {
-            throw new Error({status: 404, message: `Contact data with id ${contactId} does not exist`});
+            throw new Error(`Contact data with id ${contactId} does not exist`);
         };
         next();
     } catch (err) {
