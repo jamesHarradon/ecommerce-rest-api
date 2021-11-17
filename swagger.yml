@@ -104,7 +104,7 @@ paths:
           schema:
             type: object
             items:
-  /customer/contact:
+  /customer/contact/{customer_id}:
     post:
       summary: "Add contact details for customer"
       tags: [Customer]
