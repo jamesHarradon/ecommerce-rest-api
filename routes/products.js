@@ -9,9 +9,8 @@ productsRouter.get('/', async (req, res) => {
     try {
         const allProducts = await pool.query('SELECT * FROM products');
         res.json(allProducts.rows);
-
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }
 });
 
@@ -22,7 +21,7 @@ productsRouter.get('/:id', async (req, res) => {
         const product = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
         res.json(product.rows[0]);
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }
 })
 
@@ -38,9 +37,8 @@ productsRouter.get('/search/:searchTerm', async (req, res) => {
             return;
         };
         res.json([]);
-        
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }
 });
 

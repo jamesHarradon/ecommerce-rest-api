@@ -19,6 +19,20 @@ components:
           type: string
         email: 
           type: string
+    Payment_details:
+      type: object
+      properties:
+        card_type:
+          type: string
+        card_number:
+          type: string
+        expiry_date:
+          type: string
+        name_on_card: 
+          type: string
+        security_code:
+          type: string
+
 
 basePath: "/"
 
@@ -104,7 +118,7 @@ paths:
           schema:
             type: object
             items:
-  /customer/contact/{customer_id}:
+  /customer/contact/data/new/{customer_id}:
     post:
       summary: "Add contact details for customer"
       tags: [Customer]
@@ -147,7 +161,7 @@ paths:
           schema:
             type: object
             items:
-  /customer/contact/{contactId}:
+  /customer/contact/data/amend/{contactId}:
     put:
       summary: "Amend contact details for customer"
       tags: [Customer]
@@ -354,7 +368,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/{customerId}:
+  /cart/new/{customerId}:
     post:
       summary: "Creates a new cart for customer by id"
       tags: [Cart]
@@ -376,7 +390,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/{cartId}:
+  /cart/delete/{cartId}:
     delete:
       summary: "Deletes a cart"
       tags: [Cart]
@@ -523,7 +537,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/remove/{cartId}/{productId}:
+  /cart/products/delete/{cartId}/{productId}:
     delete:
       summary: "Deletes a product from a cart"
       tags: [Cart]
@@ -691,8 +705,125 @@ paths:
           schema:
             type: object
             items:
-
-
+  /payments/data/{customerId}:
+    get: 
+      summary: "Gets a customers payment data by customerId"
+      tags: [Payments]
+      description: "Gets a customers payment data by customerId"
+      produces: 
+        - "application/json"
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+      responses:
+        200:
+          description: 200 Success
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              card_type:
+                type: string
+              card_number:
+                type: string
+              expiry_date:
+                type: string
+              name_on_card: 
+                type: string
+              security_code:
+                type: string
+        404:
+          description: 404 Not Found
+          schema:
+            type: object
+            items:      
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
+  /payments/data/new/{customerId}:
+    post: 
+      summary: "Adds new payment data for customer by customerId"
+      tags: [Payments]
+      description: "Adds new payment data for customer by customerId"
+      produces: 
+        - "application/json"
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              properties:
+                card_type:
+                  type: string
+                card_number:
+                  type: string
+                expiry_date:
+                  type: string
+                name_on_card: 
+                  type: string
+                security_code:
+                  type: string
+      responses:
+        200:
+          description: 200 Success
+          schema:
+            type: object
+        404:
+          description: 404 Not Found
+          schema:
+            type: object
+            items:      
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
+  /payments/data/amend/{customerId}:
+    put: 
+      summary: "Amends payment data for customer by customerId"
+      tags: [Payments]
+      description: "Amends payment data for customer by customerId"
+      produces: 
+        - "application/json"
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+      requestBody:
+        required: true 
+        content:
+          "application/json":
+            schema:
+              type: object
+              anyOf:
+                - $ref: '#/components/schemas/Payment_details'
+              example: 
+                card_number: '2345678923456789'
+                expiry_date: '2023-02-01'
+                security_code: '543'
+      responses:
+        200:
+          description: 200 Success
+          schema:
+            type: object
+        404:
+          description: 404 Not Found
+          schema:
+            type: object
+            items:      
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
 
 
 

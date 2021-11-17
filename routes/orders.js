@@ -16,7 +16,7 @@ ordersRouter.post('/new/:customerId/:cartId', async (req, res) => {
         const setCorrectOrderId = await pool.query('UPDATE orders_products SET order_id = $2 WHERE order_id = $1', [cartId, orderId]);
         res.json(newOrder.rows[0]);
     } catch (err) {
-        console.error(err.message);
+        next(err);
     }
 
 });
@@ -28,7 +28,7 @@ ordersRouter.get('/recent/:customerId', async (req, res) => {
         const mostRecentOrder = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY order_date DESC LIMIT 1', [customerId]);
         res.json(mostRecentOrder.rows[0]);
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }
 });
 
@@ -37,13 +37,9 @@ ordersRouter.get('/:customerId', async (req, res) => {
     try {
         const { customerId } = req.params;
         const allOrders = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [customerId]);
-        if (!allOrders.rows?.length) {
-            res.json('You have not made any orders');
-            return;
-        }
-    res.json(allOrders.rows);  
+        res.json(allOrders.rows);  
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }  
 });
 
@@ -54,7 +50,7 @@ ordersRouter.get('/:customerId/:orderId', async (req, res) => {
         const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [orderId, customerId]);
         res.json(orderById.rows);
     } catch (err) {
-        return res.status(500).send(err);
+        next(err);
     }
 })
 
