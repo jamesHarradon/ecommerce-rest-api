@@ -49,7 +49,7 @@ app.use('/payments', paymentsRouter);
 
 app.use((err, req, res, next) => {
     const { message, status } = err;
-    res.status(status).send({ message });
+    return res.status(status).send({ message });
 })
 
 const PORT = process.env.PORT || 3000;

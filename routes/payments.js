@@ -39,7 +39,7 @@ paymentsRouter.put('/data/amend/:paymentId', async (req, res) => {
         for(const property in req.body) {
             await pool.query(`UPDATE payment_details SET ${property} = $1 WHERE id = $2`, [req.body[property], paymentId]);
         }
-        const updatedPaymentData = await pool.query('SELECT * from contacts WHERE id = $1', [paymentId]);
+        const updatedPaymentData = await pool.query('SELECT * from payments_details WHERE id = $1', [paymentId]);
         res.json(updatedPaymentData.rows[0]);
 
     } catch (err) {

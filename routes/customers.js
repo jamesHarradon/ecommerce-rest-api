@@ -71,7 +71,7 @@ customersRouter.get('/login/:username/:password', async (req, res) => {
 customersRouter.get('/data/:customerId', async (req, res) => {
     try {
         const { customerId } = req.params;
-        const customerData = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, first_name, last_name, user_name, address_line1, address_line2, town, city, county, post_code, phone, email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [customerId]);
+        const customerData = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, user_name, address_line1, address_line2, town, city, county, post_code, phone, email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [customerId]);
         res.json(customerData.rows[0]);
     } catch (err) {
         next(err);
