@@ -29,10 +29,13 @@ customersRouter.post('/register', async (req, res) => {
 });
 
 //create new contact details for customer
-customersRouter.post('/contact', async (req, res) => {
+customersRouter.post('/contact/:customerId', async (req, res) => {
     try {
+        const { customerId } = req.params;
         const { address_line1, address_line2, town, city, county, post_code, phone, email} = req.body;
         const newContact = await pool.query('INSERT INTO contacts (address_line1, address_line2, town, city, county, post_code, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [address_line1, address_line2, town, city, county, post_code, phone, email]);
+        const contactId = newContact.rows[0].id;
+        await pool.query('UPDATE customers SET contact_id = $1 WHERE id = $2', [contactId, customerId]);
         res.json(newContact.rows[0]);
     } catch (err) {
         return res.status(500).send(err);
