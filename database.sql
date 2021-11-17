@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
+    product_name VARCHAR(100),
     price_per_unit MONEY,
     image VARCHAR(100)
 );
