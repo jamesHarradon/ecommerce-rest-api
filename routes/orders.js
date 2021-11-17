@@ -51,7 +51,7 @@ ordersRouter.get('/:customerId', async (req, res) => {
 ordersRouter.get('/:customerId/:orderId', async (req, res) => {
     try {
         const { customerId, orderId } = req.params;
-        const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM products JOIN orders_products ON product_id = orders_products.order_id JOIN orders ON orders_products.order_id = orders.id WHERE orders.customer_id = $1 AND orders_products.order_id = $2', [customerId, orderId]);
+        const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [orderId, customerId]);
         res.json(orderById.rows);
     } catch (err) {
         return res.status(500).send(err);
