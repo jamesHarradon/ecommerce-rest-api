@@ -31,7 +31,7 @@ paymentsRouter.param('paymentId', async (req, res, next) => {
 });
 
 //get payment details for customer by customerid
-paymentsRouter.get('/data/:customerId', async (req, res) => {
+paymentsRouter.get('/data/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const getPaymentId = await pool.query('SELECT payment_id FROM customers WHERE id = $1', [customerId]);
@@ -44,7 +44,7 @@ paymentsRouter.get('/data/:customerId', async (req, res) => {
 })
 
 //create new payment details for customer
-paymentsRouter.post('/data/new/:customerId', async (req, res) => {
+paymentsRouter.post('/data/new/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const { card_type, card_number, expiry_date, name_on_card, security_code} = req.body;
@@ -58,7 +58,7 @@ paymentsRouter.post('/data/new/:customerId', async (req, res) => {
 });
 
 //amend payment details for customer
-paymentsRouter.put('/data/amend/:paymentId', async (req, res) => {
+paymentsRouter.put('/data/amend/:paymentId', async (req, res, next) => {
     try {
         const { paymentId } = req.params;
         const checkId = await pool.query('SELECT * from payment_details WHERE id = $1', [paymentId]);

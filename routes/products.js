@@ -19,17 +19,17 @@ productsRouter.param('id', async (req, res, next) => {
 
 
 //get all products (to display on page)
-productsRouter.get('/', async (req, res) => {
+productsRouter.get('/', async (req, res, next) => {
     try {
         const allProducts = await pool.query('SELECT * FROM products');
-        res.json(allProducts.rows);
+        res.status(200).json(allProducts.rows);
     } catch (err) {
         next(err);
     }
 });
 
 //get product by id
-productsRouter.get('/:id', async (req, res) => {
+productsRouter.get('/:id', async (req, res, next) => {
     try {
         res.json(req.product.rows[0]);
     } catch (err) {
@@ -38,7 +38,7 @@ productsRouter.get('/:id', async (req, res) => {
 })
 
 //get products by search term
-productsRouter.get('/search/:searchTerm', async (req, res) => {
+productsRouter.get('/search/:searchTerm', async (req, res, next) => {
     try {
         let { searchTerm } = req.params;
         let term = '%' + searchTerm + '%';
@@ -54,10 +54,7 @@ productsRouter.get('/search/:searchTerm', async (req, res) => {
     }
 });
 
-productsRouter.use((err, req, res, next) => {
-    const { message, status } = err;
-    return res.status(status).send({ message });
-})
+
 
 module.exports = productsRouter;
 

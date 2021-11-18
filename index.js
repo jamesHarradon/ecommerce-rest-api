@@ -25,6 +25,9 @@ const options = {
         servers: [
             {
                 url: "https://jims-ecommerce-rest-api.herokuapp.com/"
+            },
+            {
+                url: "http://localhost:3000"
             }
         ],
     },
@@ -47,10 +50,12 @@ app.use('/cart', cartRouter);
 app.use('/orders', ordersRouter);
 app.use('/payments', paymentsRouter);
 
+
 app.use((err, req, res, next) => {
     const { message, status } = err;
     return res.status(status).send({ message });
 })
+
 
 const PORT = process.env.PORT || 3000;
 

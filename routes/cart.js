@@ -20,6 +20,7 @@ cartRouter.param('customerId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Customer with id ${customerId} does not exist`);
         };
+        req.customer = exists;
         next();
     } catch (err) {
         next(err);
@@ -33,6 +34,7 @@ cartRouter.param('cartId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Cart with id ${cartId} does not exist`);
         };
+        req.cart = exists;
         next();
     } catch (err) {
         next(err);
@@ -46,6 +48,7 @@ cartRouter.param('productId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Product with id ${productId} does not exist`);
         };
+        req.product = exists;
         next();
     } catch (err) {
         next(err);
@@ -53,7 +56,7 @@ cartRouter.param('productId', async (req, res, next) => {
 });
 
 // create new cart for customer 
-cartRouter.post('/new/:customerId', async (req, res) => {
+cartRouter.post('/new/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const date = DateTime.now().toISODate();
@@ -66,11 +69,10 @@ cartRouter.post('/new/:customerId', async (req, res) => {
 
 
 //delete cart (after cart is submitted the temporary cart is no longer needed);
-cartRouter.delete('/delete/:cartId', async (req, res) => {
+cartRouter.delete('/delete/:cartId', async (req, res, next) => {
     try {
         const { cartId } = req.params;
         const deleteCart = await pool.query('DELETE FROM carts WHERE id = $1', [cartId]);
-        const checkCart = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
         res.json('Cart has been deleted successfully');
     } catch (err) {
         next(err);
@@ -79,10 +81,9 @@ cartRouter.delete('/delete/:cartId', async (req, res) => {
 
 
 // get all products from cart (to display)
-cartRouter.get('/products/:cartId', async (req, res) => {
+cartRouter.get('/products/:cartId', async (req, res, next) => {
     try {
         const { cartId } = req.params;
-        const cartExists = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
         const cartProducts = await pool.query('SELECT product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1', [cartId]);
         res.json(cartProducts.rows);
     } catch (err) {
@@ -91,7 +92,7 @@ cartRouter.get('/products/:cartId', async (req, res) => {
 });
 
 //add a new product to cart
-cartRouter.post('/products/add/:cartId/:productId', async (req, res) => {
+cartRouter.post('/products/add/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
         const newProduct = await pool.query('INSERT INTO carts_products(cart_id, product_id, quantity) VALUES ($1, $2, 1)', [cartId, productId]);
@@ -104,7 +105,7 @@ cartRouter.post('/products/add/:cartId/:productId', async (req, res) => {
 })
 
 //add one to a product quantity
-cartRouter.put('/products/increment/:cartId/:productId', async (req, res) => {
+cartRouter.put('/products/increment/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
         const product = await pool.query('UPDATE carts_products SET quantity = quantity + 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartId, productId]);
@@ -116,7 +117,7 @@ cartRouter.put('/products/increment/:cartId/:productId', async (req, res) => {
 })
 
 // minus one from a product quantity
-cartRouter.put('/products/decrement/:cartId/:productId', async (req, res) => {
+cartRouter.put('/products/decrement/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
         const product = await pool.query('UPDATE carts_products SET quantity = quantity - 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartId, productId]);
@@ -133,7 +134,7 @@ cartRouter.put('/products/decrement/:cartId/:productId', async (req, res) => {
 })
 
 //delete product in cart
-cartRouter.delete('/products/delete/:cartId/:productId', async (req, res) => {
+cartRouter.delete('/products/delete/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
         deleteProduct(cartId, productId);

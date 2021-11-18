@@ -1,4 +1,5 @@
 const Pool = require('pg').Pool;
+require('dotenv').config();
 
 // to use in development
 const devConfig = {

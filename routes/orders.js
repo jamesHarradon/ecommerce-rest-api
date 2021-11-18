@@ -11,6 +11,7 @@ ordersRouter.param('customerId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Customer with id ${customerId} does not exist`);
         };
+        req.customer = exists;
         next();
     } catch (err) {
         next(err);
@@ -24,6 +25,7 @@ ordersRouter.param('cartId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Cart with id ${cartId} does not exist`);
         };
+        req.cart = exists;
         next();
     } catch (err) {
         next(err);
@@ -37,6 +39,7 @@ ordersRouter.param('orderId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Order with id ${orderId} does not exist`);
         };
+        req.orders = exists;
         next();
     } catch (err) {
         next(err);
@@ -45,7 +48,7 @@ ordersRouter.param('orderId', async (req, res, next) => {
 
 
 //create new order (when cart is submitted) creates new order table entry and new orders_products entries
-ordersRouter.post('/new/:customerId/:cartId', async (req, res) => {
+ordersRouter.post('/new/:customerId/:cartId', async (req, res, next) => {
     try {
         const { customerId, cartId } = req.params;
         const date = DateTime.now().toISODate();
@@ -61,7 +64,7 @@ ordersRouter.post('/new/:customerId/:cartId', async (req, res) => {
 });
 
 //get most recent order
-ordersRouter.get('/recent/:customerId', async (req, res) => {
+ordersRouter.get('/recent/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const mostRecentOrder = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY order_date DESC LIMIT 1', [customerId]);
@@ -72,7 +75,7 @@ ordersRouter.get('/recent/:customerId', async (req, res) => {
 });
 
 //get all customers orders (for order history page)
-ordersRouter.get('/:customerId', async (req, res) => {
+ordersRouter.get('/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const allOrders = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [customerId]);
@@ -83,7 +86,7 @@ ordersRouter.get('/:customerId', async (req, res) => {
 });
 
 //get a single order by order id (when a previous single order is clicked on to get product data)
-ordersRouter.get('/:customerId/:orderId', async (req, res) => {
+ordersRouter.get('/:customerId/:orderId', async (req, res, next) => {
     try {
         const { customerId, orderId } = req.params;
         const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [orderId, customerId]);

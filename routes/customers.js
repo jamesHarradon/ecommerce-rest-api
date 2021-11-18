@@ -15,9 +15,10 @@ customersRouter.param('customerId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Customer with id ${customerId} does not exist`);
         };
+        req.customer = exists;
         next();
     } catch (err) {
-        next(err);
+        res.json(err.message);
     }
 });
 
@@ -28,6 +29,7 @@ customersRouter.param('contactId', async (req, res, next) => {
         if(!exists.rows?.length) {
             throw new Error(`Contact data with id ${contactId} does not exist`);
         };
+        req.contact = exists;
         next();
     } catch (err) {
         next(err);
@@ -36,7 +38,7 @@ customersRouter.param('contactId', async (req, res, next) => {
 
 
 //create a new login
-customersRouter.post('/register', async (req, res) => {
+customersRouter.post('/register', async (req, res, next) => {
     try {
         const { first_name, last_name, user_name, password } = req.body;
         const passwordEnc = encrypt(password);
@@ -50,7 +52,7 @@ customersRouter.post('/register', async (req, res) => {
 });
 
 //create new contact details for customer
-customersRouter.post('/contact/data/new/:customerId', async (req, res) => {
+customersRouter.post('/contact/data/new/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const { address_line1, address_line2, town, city, county, post_code, phone, email} = req.body;
@@ -64,10 +66,9 @@ customersRouter.post('/contact/data/new/:customerId', async (req, res) => {
 });
 
 //amend contact details for customer
-customersRouter.put('/contact/data/amend/:contactId', async (req, res) => {
+customersRouter.put('/contact/data/amend/:contactId', async (req, res, next) => {
     try {
         const { contactId } = req.params;
-        const checkId = await pool.query('SELECT * from contacts WHERE id = $1', [contactId]);
         for(const property in req.body) {
             await pool.query(`UPDATE contacts SET ${property} = $1 WHERE id = $2`, [req.body[property], contactId]);
         }
@@ -79,7 +80,7 @@ customersRouter.put('/contact/data/amend/:contactId', async (req, res) => {
 })
 
 //get an existing customer login by username and password
-customersRouter.get('/login/:username/:password', async (req, res) => {
+customersRouter.get('/login/:username/:password', async (req, res, next) => {
     try {
         const { username, password } = req.params;
         const user = await pool.query('SELECT * FROM customers WHERE user_name = $1', [username]);
@@ -96,7 +97,7 @@ customersRouter.get('/login/:username/:password', async (req, res) => {
 
 
 //get all personal data for customer
-customersRouter.get('/data/:customerId', async (req, res) => {
+customersRouter.get('/data/:customerId', async (req, res, next) => {
     try {
         const { customerId } = req.params;
         const customerData = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, user_name, address_line1, address_line2, town, city, county, post_code, phone, email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [customerId]);
