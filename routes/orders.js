@@ -9,7 +9,9 @@ ordersRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error(`Customer with id ${customerId} does not exist`);
+            const error = new Error(`Customer with id ${customerId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.customer = exists;
         next();
@@ -23,7 +25,9 @@ ordersRouter.param('cartId', async (req, res, next) => {
         const { cartId } = req.params;
         const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
         if(!exists.rows?.length) {
-            throw new Error(`Cart with id ${cartId} does not exist`);
+            const error = new Error(`Cart with id ${cartId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.cart = exists;
         next();
@@ -37,7 +41,9 @@ ordersRouter.param('orderId', async (req, res, next) => {
         const { orderId } = req.params;
         const exists = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
         if(!exists.rows?.length) {
-            throw new Error(`Order with id ${orderId} does not exist`);
+            const error = new Error(`Order with id ${orderId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.orders = exists;
         next();
@@ -54,8 +60,8 @@ ordersRouter.post('/new/:customerId/:cartId', async (req, res, next) => {
         const date = DateTime.now().toISODate();
         const newOrder = await pool.query('INSERT INTO orders (customer_id, order_date, total_cost) VALUES ($1, $3, (SELECT total_cost FROM carts WHERE customer_id = $1 AND id = $2)) RETURNING *', [customerId, cartId, date]);
         const orderId = newOrder.rows[0].id
-        const orderProducts = await pool.query('INSERT INTO orders_products(order_id, product_id, quantity) SELECT cart_id, product_id, quantity FROM carts_products WHERE cart_id = $1', [cartId]);
-        const setCorrectOrderId = await pool.query('UPDATE orders_products SET order_id = $2 WHERE order_id = $1', [cartId, orderId]);
+        await pool.query('INSERT INTO orders_products(order_id, product_id, quantity) SELECT cart_id, product_id, quantity FROM carts_products WHERE cart_id = $1', [cartId]);
+        await pool.query('UPDATE orders_products SET order_id = $2 WHERE order_id = $1', [cartId, orderId]);
         res.json(newOrder.rows[0]);
     } catch (err) {
         next(err);

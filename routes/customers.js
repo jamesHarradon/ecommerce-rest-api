@@ -13,12 +13,14 @@ customersRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error(`Customer with id ${customerId} does not exist`);
+            const error = new Error(`Customer with id ${customerId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.customer = exists;
         next();
     } catch (err) {
-        res.json(err.message);
+        next(err);
     }
 });
 
@@ -27,7 +29,9 @@ customersRouter.param('contactId', async (req, res, next) => {
         const { contactId } = req.params;
         const exists = await pool.query('SELECT * FROM contacts WHERE id = $1', [contactId]);
         if(!exists.rows?.length) {
-            throw new Error(`Contact data with id ${contactId} does not exist`);
+            const error = new Error(`Contact data with id ${contactId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.contact = exists;
         next();
@@ -44,6 +48,9 @@ customersRouter.post('/register', async (req, res, next) => {
         const passwordEnc = encrypt(password);
         const date = DateTime.now().toISODate();
         const checkExisting = await pool.query('SELECT user_name FROM customers WHERE user_name = $1', [user_name]);
+        if (checkExisting.rows?.length) {
+            throw new Error(`Username ${user_name} already in use, please choose another`);
+        }
         const newLogin = await pool.query('INSERT INTO customers (user_name, password, date_created, contact_id, first_name, last_name) VALUES ($1, $2, $3, null, $4, $5) RETURNING user_name, date_created, contact_id, first_name, last_name ', [user_name, passwordEnc, date, first_name, last_name]);
         res.json(newLogin.rows[0]);
     } catch (err) {
@@ -84,11 +91,18 @@ customersRouter.get('/login/:username/:password', async (req, res, next) => {
     try {
         const { username, password } = req.params;
         const user = await pool.query('SELECT * FROM customers WHERE user_name = $1', [username]);
+        if (!user.rows?.length) {
+            const error = new Error('Login data incorrect, please try again');
+            error.status = 401;
+            throw error;
+        }
         const userPassword = user.rows[0].password;
         if (decryptIsMatch(password, userPassword)) {
             res.json('You have successfully logged in')
         } else {
-            throw new Error({status: 401, message: 'Log in data incorrect, please try again'})
+            const error = new Error('Login data incorrect, please try again');
+            error.status = 401;
+            throw error;
         }
     } catch (err) {
         next(err);

@@ -9,7 +9,9 @@ paymentsRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error(`Customer with id ${customerId} does not exist`);
+            const error = new Error(`Customer with id ${customerId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         next();
     } catch (err) {
@@ -20,9 +22,11 @@ paymentsRouter.param('customerId', async (req, res, next) => {
 paymentsRouter.param('paymentId', async (req, res, next) => {
     try {
         const { paymentId } = req.params;
-        const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [paymentId]);
+        const exists = await pool.query('SELECT * FROM payment_details WHERE id = $1', [paymentId]);
         if(!exists.rows?.length) {
-            throw new Error(`Payment data with id ${paymentId} does not exist`);
+            const error = new Error(`Payment data with id ${paymentId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         next();
     } catch (err) {
@@ -61,13 +65,11 @@ paymentsRouter.post('/data/new/:customerId', async (req, res, next) => {
 paymentsRouter.put('/data/amend/:paymentId', async (req, res, next) => {
     try {
         const { paymentId } = req.params;
-        const checkId = await pool.query('SELECT * from payment_details WHERE id = $1', [paymentId]);
         for(const property in req.body) {
             await pool.query(`UPDATE payment_details SET ${property} = $1 WHERE id = $2`, [req.body[property], paymentId]);
         }
         const updatedPaymentData = await pool.query('SELECT * from payments_details WHERE id = $1', [paymentId]);
         res.json(updatedPaymentData.rows[0]);
-
     } catch (err) {
         next(err);
     }

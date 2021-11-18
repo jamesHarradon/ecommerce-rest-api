@@ -6,9 +6,11 @@ const productsRouter = express.Router();
 productsRouter.param('id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [id]);
+        const exists = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
         if(!exists.rows?.length) {
-            throw new Error(`Product with id ${id} does not exist`);
+            const error = new Error(`Product with id ${id} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.product = exists;
         next();

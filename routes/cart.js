@@ -18,7 +18,9 @@ cartRouter.param('customerId', async (req, res, next) => {
         const { customerId } = req.params;
         const exists = await pool.query('SELECT * FROM customers WHERE id = $1', [customerId]);
         if(!exists.rows?.length) {
-            throw new Error(`Customer with id ${customerId} does not exist`);
+            const error = new Error(`Customer with id ${customerId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.customer = exists;
         next();
@@ -32,7 +34,9 @@ cartRouter.param('cartId', async (req, res, next) => {
         const { cartId } = req.params;
         const exists = await pool.query('SELECT * FROM carts WHERE id = $1', [cartId]);
         if(!exists.rows?.length) {
-            throw new Error(`Cart with id ${cartId} does not exist`);
+            const error = new Error(`Cart with id ${cartId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.cart = exists;
         next();
@@ -46,7 +50,9 @@ cartRouter.param('productId', async (req, res, next) => {
         const { productId } = req.params;
         const exists = await pool.query('SELECT * FROM products WHERE id = $1', [productId]);
         if(!exists.rows?.length) {
-            throw new Error(`Product with id ${productId} does not exist`);
+            const error = new Error(`Product with id ${productId} does not exist`);
+            error.status = 404;
+            throw error;
         };
         req.product = exists;
         next();
@@ -72,7 +78,7 @@ cartRouter.post('/new/:customerId', async (req, res, next) => {
 cartRouter.delete('/delete/:cartId', async (req, res, next) => {
     try {
         const { cartId } = req.params;
-        const deleteCart = await pool.query('DELETE FROM carts WHERE id = $1', [cartId]);
+        await pool.query('DELETE FROM carts WHERE id = $1', [cartId]);
         res.json('Cart has been deleted successfully');
     } catch (err) {
         next(err);
@@ -95,7 +101,7 @@ cartRouter.get('/products/:cartId', async (req, res, next) => {
 cartRouter.post('/products/add/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
-        const newProduct = await pool.query('INSERT INTO carts_products(cart_id, product_id, quantity) VALUES ($1, $2, 1)', [cartId, productId]);
+        await pool.query('INSERT INTO carts_products(cart_id, product_id, quantity) VALUES ($1, $2, 1)', [cartId, productId]);
         // update total_cost in carts table
         updateTotalCost(cartId);
         res.json('Added product to cart successfully');
@@ -108,7 +114,7 @@ cartRouter.post('/products/add/:cartId/:productId', async (req, res, next) => {
 cartRouter.put('/products/increment/:cartId/:productId', async (req, res, next) => {
     try {
         const { cartId, productId } = req.params;
-        const product = await pool.query('UPDATE carts_products SET quantity = quantity + 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartId, productId]);
+        await pool.query('UPDATE carts_products SET quantity = quantity + 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartId, productId]);
         updateTotalCost(cartId);
         res.json('Added one to product quantity');
     } catch (err) {
