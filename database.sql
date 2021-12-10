@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE TABLE IF NOT EXISTS orders (
 	id SERIAL PRIMARY KEY,
 	customer_id INTEGER,
-	order_date DATE,
+	order_date TIMESTAMP,
 	total_cost MONEY
 );
 

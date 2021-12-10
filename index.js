@@ -2,12 +2,14 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-const cartRouter = require('./routes/cart');
-const customersRouter = require('./routes/customers');
-const ordersRouter = require('./routes/orders');
-const productsRouter = require('./routes/products');
-const paymentsRouter = require('./routes/payments');
+const authRouter = require('./newStructure/routes/auth-route');
+const cartRouter = require('./newStructure/routes/cart-route');
+const customerRouter = require('./newStructure/routes/customer-route');
+const orderRouter = require('./newStructure/routes/order-route');
+const productRouter = require('./newStructure/routes/product-route');
+const paymentRouter = require('./newStructure/routes/payment-route');
 
 
 const options = {
@@ -24,7 +26,7 @@ const options = {
         ],
         servers: [
             {
-                url: "https://jims-ecommerce-rest-api.herokuapp.com/"
+                url: "https://jims-ecommerce-rest-api.herokuapp.com/",
             }
         ],
     },
@@ -40,19 +42,19 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
-app.use('/customer', customersRouter);
-app.use('/products', productsRouter);
+app.use('/auth', authRouter);
+app.use('/customer', customerRouter);
+app.use('/products', productRouter);
 app.use('/cart', cartRouter);
-app.use('/orders', ordersRouter);
-app.use('/payments', paymentsRouter);
-
+app.use('/orders', orderRouter);
+app.use('/payments', paymentRouter);
 
 app.use((err, req, res, next) => {
     const { message, status } = err;
     res.status(status || 500).send({ message });
 })
-
 
 const PORT = process.env.PORT || 3000;
 

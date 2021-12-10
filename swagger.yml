@@ -88,20 +88,28 @@ paths:
           schema:
             type: object
             items:
-  /customer/login/{user_name}/{password}:
-    get:
+  /auth/login:
+    post:
       summary: "Login to a user account"
-      tags: [Customer]
+      tags: [Auth]
       description: "Login to a user account"
       produces:
         - "application/x-www-form-urlencoded"
-      parameters:
-        - name: user_name
-          in: path
-          required: true
-        - name: password
-          in: path
-          required: true              
+      requestBody:
+        required: true
+        content:
+          "application/x-www-form-urlencoded":
+            schema: 
+              type: object
+              properties:                  
+                user_name: 
+                  type: string                  
+                password: 
+                  type: string   
+                  format: password
+              required: 
+                - user_name
+                - password             
       responses:
         200:
           description: 200 Success
@@ -113,6 +121,23 @@ paths:
           schema:
             type: object
             items:
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
+  /auth/logout:
+    get:
+      summary: "Logs out a user"
+      tags: [Auth]
+      description: "Logs out a user"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: 200 Success
+          schema:
+            -
         500:
           description: 500 Internal Server Error
           schema:
@@ -161,7 +186,7 @@ paths:
           schema:
             type: object
             items:
-  /customer/contact/data/amend/{contactId}:
+  /customer/contact/data/amend/{customerId}:
     put:
       summary: "Amend contact details for customer"
       tags: [Customer]
@@ -169,7 +194,7 @@ paths:
       produces:
         - "application/json"
       parameters:
-        - name: contactId
+        - name: customerId
           in: path
           required: true
       requestBody:
@@ -390,7 +415,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/delete/{cartId}:
+  /cart/delete/{cusomerId}/{cartId}:
     delete:
       summary: "Deletes a cart"
       tags: [Cart]
@@ -398,6 +423,9 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true
@@ -412,7 +440,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/{cartId}:
+  /cart/products/{customerId}/{cartId}:
     get: 
       summary: "Gets all products in a cart by cartId"
       tags: [Cart]
@@ -420,6 +448,9 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true
@@ -447,7 +478,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/add/{cartId}/{productId}:
+  /cart/products/add/{customerId}/{cartId}/{productId}:
     post:
       summary: "Adds a product to cart"
       tags: [Cart]
@@ -455,6 +486,9 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true
@@ -477,7 +511,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/increment/{cartId}/{productId}:
+  /cart/products/increment/{customerId}/{cartId}/{productId}:
     put:
       summary: "Increases a product quantity in the cart by one"
       tags: [Cart]
@@ -485,6 +519,9 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true
@@ -507,7 +544,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/decrement/{cartId}/{productId}:
+  /cart/products/decrement/{customerId}/{cartId}/{productId}:
     put:
       summary: "Decreases a product quantity in the cart by one"
       tags: [Cart]
@@ -515,6 +552,9 @@ paths:
       produces:
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true
@@ -537,7 +577,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/delete/{cartId}/{productId}:
+  /cart/products/delete/{customerId}/{cartId}/{productId}:
     delete:
       summary: "Deletes a product from a cart"
       tags: [Cart]
@@ -545,6 +585,9 @@ paths:
       produces: 
         - "application/json"
       parameters:
+        - name: customerId
+          in: path
+          required: true
         - name: cartId
           in: path
           required: true

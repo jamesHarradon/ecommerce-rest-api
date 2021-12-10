@@ -1,10 +1,11 @@
 const { application } = require('express');
 const express = require('express');
 const pool = require('../db');
+const isAuthorized = require('../modules/isAuthorized');
 
 const paymentsRouter = express.Router();
 
-paymentsRouter.param('customerId', async (req, res, next) => {
+paymentsRouter.param('customerId', isAuthorized, async (req, res, next) => {
     try {
         const { customerId } = req.params;
         req.customerId = customerId;

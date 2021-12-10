@@ -1,10 +1,11 @@
 const express = require('express');
 const pool = require('../db');
 const { DateTime } = require('luxon');
+const isAuthorized = require('../modules/isAuthorized');
 
 const ordersRouter = express.Router();
 
-ordersRouter.param('customerId', async (req, res, next) => {
+ordersRouter.param('customerId', isAuthorized, async (req, res, next) => {
     try {
         const { customerId } = req.params;
         req.customerId = customerId;
@@ -60,10 +61,10 @@ ordersRouter.param('orderId', async (req, res, next) => {
 ordersRouter.post('/new/:customerId/:cartId', async (req, res, next) => {
     try {
         const date = DateTime.now().toISODate();
-        const newOrder = await pool.query('INSERT INTO orders (customer_id, order_date, total_cost) VALUES ($1, $3, (SELECT total_cost FROM carts WHERE customer_id = $1 AND id = $2)) RETURNING *', [req.customerId, req.cartId, date]);
+        const newOrder = await pool.query('INSERT INTO orders (customer_id, order_date, total_cost) VALUES ($1, $3, (SELECT total_cost FROM carts WHERE customer_id = $1 AND id = $2)) RETURNING *', [req.params.customerId, req.params.cartId, date]);
         const orderId = newOrder.rows[0].id
-        await pool.query('INSERT INTO orders_products(order_id, product_id, quantity) SELECT cart_id, product_id, quantity FROM carts_products WHERE cart_id = $1', [req.cartId]);
-        await pool.query('UPDATE orders_products SET order_id = $2 WHERE order_id = $1', [req.cartId, orderId]);
+        await pool.query('INSERT INTO orders_products(order_id, product_id, quantity) SELECT cart_id, product_id, quantity FROM carts_products WHERE cart_id = $1', [req.params.cartId]);
+        await pool.query('UPDATE orders_products SET order_id = $2 WHERE order_id = $1', [req.params.cartId, orderId]);
         res.json(newOrder.rows[0]);
     } catch (err) {
         next(err);
@@ -74,7 +75,7 @@ ordersRouter.post('/new/:customerId/:cartId', async (req, res, next) => {
 //get most recent order
 ordersRouter.get('/recent/:customerId', async (req, res, next) => {
     try {
-        const mostRecentOrder = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY order_date DESC LIMIT 1', [req.customerId]);
+        const mostRecentOrder = await pool.query('SELECT * FROM orders WHERE customer_id = $1 ORDER BY order_date DESC LIMIT 1', [req.params.customerId]);
         res.json(mostRecentOrder.rows[0]);
     } catch (err) {
         next(err);
@@ -84,7 +85,7 @@ ordersRouter.get('/recent/:customerId', async (req, res, next) => {
 //get all customers orders (for order history page)
 ordersRouter.get('/:customerId', async (req, res, next) => {
     try {
-        const allOrders = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [req.customerId]);
+        const allOrders = await pool.query('SELECT * FROM orders WHERE customer_id = $1', [req.params.customerId]);
         res.json(allOrders.rows);  
     } catch (err) {
         next(err);
@@ -94,7 +95,7 @@ ordersRouter.get('/:customerId', async (req, res, next) => {
 //get a single order by order id (when a previous single order is clicked on to get product data)
 ordersRouter.get('/:customerId/:orderId', async (req, res, next) => {
     try {
-        const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [req.orderId, req.customerId]);
+        const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [req.params.orderId, req.params.customerId]);
         res.json(orderById.rows);
     } catch (err) {
         next(err);
