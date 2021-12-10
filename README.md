@@ -4,6 +4,8 @@ Node/Express REST API to provide typical functionality found in an ecommerce web
 ## Running and Testing
 Go to [https://jims-ecommerce-rest-api.herokuapp.com/api-docs/](https://jims-ecommerce-rest-api.herokuapp.com/api-docs/) to test out using the Swagger UI.
 
+**Using the Swagger UI you can test the API using Brad Pitt's fictional account, customerid 2, username: pitty60 password: fightclub1 or create your own :)**
+
 To run locally, `npm install`, then `npm run start`
 
 This project requires a [PostgreSQL](https://www.postgresql.org/) database to be running locally.  Reference the ERD diagram located in the `resources` folder of this repo to view the structure of the tables.  You can use [pgAdmin](https://www.pgadmin.org/) to interact with the database manually. 
