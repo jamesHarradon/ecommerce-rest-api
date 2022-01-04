@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../../db');
+const jwt = require('jsonwebtoken');
 const isAuthorized = require('../../modules/isAuthorized');
 const CustomerService = require('../services/customer-service');
 
@@ -11,7 +11,19 @@ const customerRouter = express.Router();
 customerRouter.post('/register', async (req, res, next) => {
     try {
         const response = await CustomerServiceInstance.register(req.body);
-        res.json(response);
+        if(response) {
+            let secret = process.env.TOKEN_SECRET;
+            let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 30,
+                //secure: true - use for https only
+            }).sendStatus(200);
+        } else {
+            //response above is null when the users email they are trying to register is already in the database.
+            res.status(400).send();
+        }
+   
     } catch (err) {
         next(err);
     }

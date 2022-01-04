@@ -10,14 +10,15 @@ class CustomerService {
         const hashedPassword = scryptSync(password, salt, 64).toString('hex');
         const passwordEncrypted = `${salt}:${hashedPassword}`;
         return passwordEncrypted;
+        //need to await this as returns promise
     }
 
     async register(data) {
         try {
-            const user = await CustomerModelInstance.checkExistingUserName(data.username);
+            const user = await CustomerModelInstance.checkExistingEmail(data.email);
             if (!user) {
                 const encryptedPassword = this.encrypt(data.password);
-                const newData = {...data, password: encryptedPassword}
+                const newData = {...data, password: await encryptedPassword}
                 const loginData = await CustomerModelInstance.createLogin(newData);
                 return loginData;
             } else {

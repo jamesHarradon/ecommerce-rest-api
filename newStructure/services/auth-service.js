@@ -18,7 +18,7 @@ class AuthService {
 
     async login(data) {
         try {
-            const user = await CustomerModelInstance.checkExistingUserName(data.user_name);
+            const user = await CustomerModelInstance.checkExistingEmail(data.email);
             if (!user) return null;
             return this.decryptIsMatch(data.password, user.password) ? user : null;
         } catch (err) {

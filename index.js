@@ -26,7 +26,8 @@ const options = {
         ],
         servers: [
             {
-                url: "https://jims-ecommerce-rest-api.herokuapp.com/",
+                //url: "https://jims-ecommerce-rest-api.herokuapp.com/",
+                url:"http://localhost:4000"
             }
         ],
     },
@@ -37,10 +38,15 @@ const specs = swaggerJsDoc(options);
 
 const app = express();
 
+const origin = {
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}
+
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(origin));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
@@ -56,7 +62,7 @@ app.use((err, req, res, next) => {
     res.status(status || 500).send({ message });
 })
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);

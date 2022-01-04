@@ -18,19 +18,17 @@ authRouter.post('/login', isAuthorized, async (req, res, next) => {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 30,
                 //secure: true - use for https only
-            }).json('You have successfully logged in');
+            }).sendStatus(200);
         } else {
-            const error = new Error('Your login attempt failed, please try again');
-            error.status = 403;
-            throw error;
+            res.status(403).send();
         }
     } catch (err) {
         next(err);
     }
 });
 
-authRouter.get('/logout', (req, res, next) => {
-    res.clearCookie('jwt').send('You have successfully logged out.')
+authRouter.post('/logout', (req, res, next) => {
+    res.clearCookie('jwt').sendStatus(200);
 })
 
 module.exports = authRouter;
