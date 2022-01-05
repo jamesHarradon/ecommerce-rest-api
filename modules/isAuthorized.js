@@ -10,8 +10,9 @@ const isAuthorized = async (req, res, next) => {
         let secret = process.env.TOKEN_SECRET;
         const data = jwt.verify(token, secret, { algorithm: 'HS256'});
         if(parseInt(req.params.customerId) !== data.id) {
+            req.isAuthorized = false;
             const error = new Error('Not Authorized!');
-            error.status = 403;
+            error.status = 401;
             throw error;
         }
         req.userid = data.id

@@ -30,6 +30,20 @@ class CustomerService {
         }
     }
 
+    async googleRegister(data) {
+        try {
+            const user = await CustomerModelInstance.checkExistingGoogleId(data.google_id);
+            if(user) {
+                return user;
+            } else {
+                const loginData = await CustomerModelInstance.createLogin(data);
+                return loginData;
+            }
+        } catch (err) {
+            throw(err)
+        }
+    }
+
     async createContact(custid, data) {
         try {
             const contactData = await CustomerModelInstance.createContact(custid, data);

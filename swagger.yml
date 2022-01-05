@@ -108,7 +108,7 @@ paths:
                   type: string   
                   format: password
               required: 
-                - user_name
+                - email
                 - password             
       responses:
         200:

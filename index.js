@@ -4,6 +4,9 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const passport = require('passport')
+require('./config/passport')
+
 const authRouter = require('./newStructure/routes/auth-route');
 const cartRouter = require('./newStructure/routes/cart-route');
 const customerRouter = require('./newStructure/routes/customer-route');
@@ -48,7 +51,8 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 app.use(express.json());
 app.use(cors(origin));
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser())
+app.use(cookieParser());
+app.use(passport.initialize())
 
 app.use('/auth', authRouter);
 app.use('/customer', customerRouter);

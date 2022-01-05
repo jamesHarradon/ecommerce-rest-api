@@ -26,6 +26,15 @@ class CustomerModel {
         }
     }
 
+    async checkExistingGoogleId(id) {
+        try {
+            const data = await pool.query('SELECT * FROM customers WHERE google_id = $1', [id]);
+            return data.rows?.length ? data.rows[0] : null;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
     async checkExistingContact(custid) {
         try {
             const data = await pool.query('SELECT * FROM contacts WHERE id = (SELECT contact_id FROM customers WHERE id = $1)', [custid]);
