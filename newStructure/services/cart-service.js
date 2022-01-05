@@ -9,7 +9,7 @@ class CartService {
         try {
             const cart = await CartModelInstance.checkExistingCart(custid);
             if (!cart) return null;
-            return true;
+            return cart;
         } catch (err) {
             throw(err);
         }

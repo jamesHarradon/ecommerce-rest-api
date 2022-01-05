@@ -22,9 +22,9 @@ authRouter.get('/google/redirect', passport.authenticate('google', {failureMessa
 });
 
 // for app to check for active session cookie on render
-authRouter.get('/active', isAuthorized, async (req, res, next) => {
+authRouter.get('/active/:customerId', isAuthorized, async (req, res, next) => {
     if (req.isAuthorized) {
-        res.json(req.userid).sendStatus(200);
+        res.json(req.userid);
     } else {
         next(err);
     }

@@ -4,7 +4,6 @@ const isAuthorized = async (req, res, next) => {
     if(!req.cookies.jwt && req.path === '/login') {
         return next();
     } 
-
     try {
         const token = req.cookies.jwt;
         let secret = process.env.TOKEN_SECRET;

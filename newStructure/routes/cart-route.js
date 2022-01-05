@@ -7,6 +7,16 @@ const CartServiceInstance = new CartService;
 
 const cartRouter = express.Router();
 
+//get cartid by customer id
+cartRouter.get('/:customerId', isAuthorized, async (req, res, next) => {
+    try {
+        const response = await CartServiceInstance.checkCart(req.params.customerId);
+        res.json(response);
+    } catch (err) {
+        next(err);
+    }
+})
+
 //create new cart for customer
 cartRouter.post('/new/:customerId', isAuthorized, async (req, res, next) => {
     try {
