@@ -38,9 +38,9 @@ cartRouter.delete('/delete/:customerId', isAuthorized, async (req, res, next) =>
 })
 
 //get all products from cart
-cartRouter.get('/products/:customerId/:cartId', isAuthorized, async (req, res, next) => {
+cartRouter.get('/products/:customerId', isAuthorized, async (req, res, next) => {
     try {
-        const response = await CartServiceInstance.getAllProductsFromCart(req.params.customerId, req.params.cartId);
+        const response = await CartServiceInstance.getAllProductsFromCart(req.params.customerId);
         res.json(response);
     } catch (err) {
         next(err);

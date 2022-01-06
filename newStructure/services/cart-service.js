@@ -20,7 +20,7 @@ class CartService {
             const product = await CartModelInstance.checkExistingProductInCart(custid, productid);
             if (!product) return null;
             return true;
-        } catch (error) {
+        } catch (err) {
             throw(err);
         }
     }
@@ -46,10 +46,12 @@ class CartService {
         }
     }
 
-    async getAllProductsFromCart(custid, cartid) {
+    async getAllProductsFromCart(custid) {
         try {
-            if(!this.checkCart(custid)) return null;
-            const cartProducts = await CartModelInstance.getAllProductsFromCart(cartid);
+            const cart = await CartModelInstance.checkExistingCart(custid);
+            if (!cart) return null;
+        
+            const cartProducts = await CartModelInstance.getAllProductsFromCart(cart.id);
             return cartProducts;
 
         } catch (err) {

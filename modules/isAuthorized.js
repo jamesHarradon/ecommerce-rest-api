@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const isAuthorized = async (req, res, next) => {
+    //if(!req.cookies.jwt) return res.redirect('http://localhost:3000/');
     if(!req.cookies.jwt && req.path === '/login') {
         return next();
     } 

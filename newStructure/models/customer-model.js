@@ -26,6 +26,15 @@ class CustomerModel {
         }
     }
 
+    async checkExistingId(id) {
+        try {
+            const data = await pool.query('SELECT * FROM customers WHERE id = $1', [id]);
+            return data.rows?.length ? data.rows[0] : null;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
     async checkExistingGoogleId(id) {
         try {
             const data = await pool.query('SELECT * FROM customers WHERE google_id = $1', [id]);
@@ -74,7 +83,7 @@ class CustomerModel {
 
     async getCustomerData(custid) {
         try {
-            const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town, city, county, post_code, phone, email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);
+            const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town, city, county, post_code, phone, customers.email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);
             return data.rows?.length ? data.rows[0] : null;
         } catch (err) {
             throw new Error(err);

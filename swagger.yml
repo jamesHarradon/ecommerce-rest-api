@@ -440,7 +440,7 @@ paths:
           schema:
             type: object
             items:
-  /cart/products/{customerId}/{cartId}:
+  /cart/products/{customerId}:
     get: 
       summary: "Gets all products in a cart by cartId"
       tags: [Cart]
@@ -449,9 +449,6 @@ paths:
         - "application/json"
       parameters:
         - name: customerId
-          in: path
-          required: true
-        - name: cartId
           in: path
           required: true
       responses: 

@@ -8,9 +8,9 @@ const OrderServiceInstance = new OrderService;
 const orderRouter = express.Router();
 
 //gets all orders for customer
-orderRouter.get('/history', isAuthorized, async (req, res, next) => {
+orderRouter.get('/history/:customerId', isAuthorized, async (req, res, next) => {
     try {
-        const response = await OrderServiceInstance.getAllOrders(req.userid);
+        const response = await OrderServiceInstance.getAllOrders(req.params.customerId);
         res.json(response);
     } catch (err) {
         next(err);

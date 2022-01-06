@@ -45,7 +45,7 @@ class CartModel {
 
     async getAllProductsFromCart(cartid) {
         try {
-            const data = await pool.query('SELECT product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1', [cartid]);
+            const data = await pool.query('SELECT product_id, product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1', [cartid]);
             return data.rows?.length ? data.rows : null;
         } catch (err) {
             throw new Error(err);

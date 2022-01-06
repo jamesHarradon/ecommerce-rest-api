@@ -46,6 +46,7 @@ const origin = {
     credentials: true
 }
 
+
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());

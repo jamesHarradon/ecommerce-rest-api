@@ -36,8 +36,8 @@ class CustomerService {
             if(user) {
                 return user;
             } else {
-                const loginData = await CustomerModelInstance.createLogin(data);
-                return loginData;
+                const newUser = await CustomerModelInstance.createLogin(data);
+                return newUser;
             }
         } catch (err) {
             throw(err)

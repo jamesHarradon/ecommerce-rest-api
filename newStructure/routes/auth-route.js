@@ -15,18 +15,33 @@ authRouter.get('/google', passport.authenticate('google', { scope: ['profile', '
 
 authRouter.get('/google/redirect', passport.authenticate('google', {failureMessage: true }), async (req, res, next) => {
     try {
-        res.redirect('http://localhost:3000/products');
+        res.redirect('http://localhost:3000/');
     } catch (err) {
         next(err);
     }
 });
 
-// for app to check for active session cookie on render
-authRouter.get('/active/:customerId', isAuthorized, async (req, res, next) => {
-    if (req.isAuthorized) {
-        res.json(req.userid);
-    } else {
-        next(err);
+
+// get id from cookie if page is refreshed
+authRouter.get('/id', async (req, res, next) => {
+    try {
+        if (!req.cookies.jwt) res.sendStatus(500);
+        const token = req.cookies.jwt;
+        let secret = process.env.TOKEN_SECRET;
+        const data = jwt.verify(token, secret, { algorithm: 'HS256'});
+
+        const response = await CustomerModelInstance.checkExistingId(data.id);
+        console.log(response);
+        const id = response.id
+
+        if(id !== data.id) {
+            const error = new Error('Not Authorized!');
+            error.status = 401;
+            throw error;
+        }
+        res.json(data.id)
+    } catch (err) {
+        next(err)
     }
 });
 
@@ -46,9 +61,10 @@ authRouter.post('/login', isAuthorized, async (req, res, next) => {
                 maxAge: 1000 * 60 * 30,
                 //sameSite: look into this
                 //secure: true - use for https only
-            }).sendStatus(200);
+            })
+            res.json(response.id).send();
         } else {
-            res.status(403).send();
+            res.status(401).send();
         }
     } catch (err) {
         next(err);
