@@ -46,7 +46,7 @@ class CartModel {
     async getAllProductsFromCart(cartid) {
         try {
             const data = await pool.query('SELECT product_id, product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1', [cartid]);
-            return data.rows?.length ? data.rows : null;
+            return data.rows?.length ? data.rows : [];
         } catch (err) {
             throw new Error(err);
         }
@@ -94,6 +94,15 @@ class CartModel {
         try {
             await pool.query('DELETE FROM carts_products WHERE cart_id = $1 AND product_id = $2', [cartid, productid]);
             
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    // for replacing a guest basket to a logged in basket if user had an existing basket in db
+    async deleteAllProductsFromCart(cartid) {
+        try {
+            await pool.query('DELETE FROM carts_products WHERE cart_id = $1', [cartid])
         } catch (err) {
             throw new Error(err);
         }

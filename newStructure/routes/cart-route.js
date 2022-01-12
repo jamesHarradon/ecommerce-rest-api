@@ -87,4 +87,14 @@ cartRouter.delete('/products/delete/:customerId/:cartId/:productId', isAuthorize
     }
 })
 
+//delete all products from cart - when guest basket replaces existing basket for user
+cartRouter.delete('/products/deleteAll/:customerId/:cartId', isAuthorized, async (req, res, next) => {
+    try {
+        const response = await CartServiceInstance.deleteAllCartProducts(req.params.cartId);
+        res.json(response);
+    } catch (err) {
+        next(err);
+    }
+})
+
 module.exports = cartRouter;

@@ -5,7 +5,7 @@ class PaymentModel {
     async getPaymentDetails(custid) {
         try {
             const data = await pool.query('SELECT * FROM payment_details WHERE id = (SELECT payment_id FROM customers WHERE id = $1)', [custid]);
-            return data.rows?.length ? data.rows[0] : null;
+            return data.rows?.length ? [data.rows[0]] : null;
         } catch (err) {
             throw new Error(err);
         }

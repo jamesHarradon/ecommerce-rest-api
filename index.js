@@ -50,21 +50,22 @@ const origin = {
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());
-app.use(cors(origin));
+app.use(cors(origin)); // only needed when not using proxy server
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize())
 
-app.use('/auth', authRouter);
-app.use('/customer', customerRouter);
-app.use('/products', productRouter);
-app.use('/cart', cartRouter);
-app.use('/orders', orderRouter);
-app.use('/payments', paymentRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/customer', customerRouter);
+app.use('/api/products', productRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/payments', paymentRouter);
 
 app.use((err, req, res, next) => {
     const { message, status } = err;
-    res.status(status || 500).send({ message });
+    //res.status(status || 500).send({ message });
+    console.log(message)
 })
 
 const PORT = process.env.PORT || 4000;

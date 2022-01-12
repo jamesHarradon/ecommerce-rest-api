@@ -29,9 +29,7 @@ authRouter.get('/id', async (req, res, next) => {
         const token = req.cookies.jwt;
         let secret = process.env.TOKEN_SECRET;
         const data = jwt.verify(token, secret, { algorithm: 'HS256'});
-
         const response = await CustomerModelInstance.checkExistingId(data.id);
-        console.log(response);
         const id = response.id
 
         if(id !== data.id) {
@@ -49,9 +47,7 @@ authRouter.get('/id', async (req, res, next) => {
 //customer login
 authRouter.post('/login', isAuthorized, async (req, res, next) => {
     try {
-        if(req.isAuthorized) {
-            res.redirect('http://localhost:3000/');
-        }
+        
         const response = await AuthServiceInstance.login(req.body);
         if(response) {
             let secret = process.env.TOKEN_SECRET;
@@ -62,7 +58,7 @@ authRouter.post('/login', isAuthorized, async (req, res, next) => {
                 //sameSite: look into this
                 //secure: true - use for https only
             })
-            res.json(response.id).send();
+            res.json(response.id);
         } else {
             res.status(401).send();
         }
@@ -70,6 +66,19 @@ authRouter.post('/login', isAuthorized, async (req, res, next) => {
         next(err);
     }
 });
+
+authRouter.put('/change-password/:customerId', isAuthorized, async (req, res, next) => {
+    try {
+        const response = await AuthServiceInstance.changePassword(req.params.customerId, req.body);
+        if(response) {
+            res.sendStatus(200);
+        } else {
+            res.status(401).json('Current Password Incorrect!');
+        }
+    } catch (err) {
+        next(err);
+    }
+})
 
 //customer logout
 authRouter.post('/logout', (req, res, next) => {

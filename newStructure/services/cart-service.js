@@ -46,6 +46,17 @@ class CartService {
         }
     }
 
+    async deleteAllCartProducts(cartid) {
+        try {
+            await CartModelInstance.deleteAllProductsFromCart(cartid);
+            await CartModelInstance.updateTotalCost(cartid);
+            const data = await CartModelInstance.getAllProductsFromCart(cartid);
+            return data;
+        } catch (err) {
+            throw(err);
+        }
+    }
+
     async getAllProductsFromCart(custid) {
         try {
             const cart = await CartModelInstance.checkExistingCart(custid);
@@ -93,6 +104,7 @@ class CartService {
         try {
             if(!this.checkCart(custid) || !this.checkProduct(custid, productid)) return null;
             await CartModelInstance.deleteProductFromCart(custid, cartid, productid);
+            await CartModelInstance.updateTotalCost(cartid);
             const data = await CartModelInstance.checkExistingProductInCart(custid, productid);
             return data;
         } catch (err) {

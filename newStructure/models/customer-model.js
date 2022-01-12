@@ -65,7 +65,7 @@ class CustomerModel {
 
     async addContactIdForCustomer(custid, contactid) {
         try {
-            await pool.query('UPDATE customers SET contact_id = $1 WHERE id = $2', [custid, contactid]);
+            await pool.query('UPDATE customers SET contact_id = $2 WHERE id = $1', [custid, contactid]);
         } catch (err) {
             throw new Error(err);
         }
@@ -81,10 +81,20 @@ class CustomerModel {
         }
     }
 
+    async amendLoginData(custid, data) {
+        try {
+            for(const property in data) {
+                await pool.query(`UPDATE customers SET ${property} = $1 WHERE id = $2`, [data[property], custid]);
+            }
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
     async getCustomerData(custid) {
         try {
             const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town, city, county, post_code, phone, customers.email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);
-            return data.rows?.length ? data.rows[0] : null;
+            return data.rows?.length ? [data.rows[0]] : null;
         } catch (err) {
             throw new Error(err);
         }
