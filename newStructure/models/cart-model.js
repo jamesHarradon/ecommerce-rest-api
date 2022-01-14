@@ -36,6 +36,7 @@ class CartModel {
 
     async deleteCart(custid) {
         try {
+            await pool.query('DELETE FROM carts_products WHERE cart_id = (SELECT id FROM carts WHERE customer_id = $1)', [custid]);
             await pool.query('DELETE FROM carts WHERE id = (SELECT id FROM carts WHERE customer_id = $1)', [custid]);
         
         } catch (err) {

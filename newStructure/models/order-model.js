@@ -26,9 +26,9 @@ class OrderModel {
         }
     }
 
-    async addToOrdersProducts(custid, cartid) {
+    async addToOrdersProducts(custid, cartid, orderId) {
         try {
-            await pool.query('INSERT INTO orders_products(order_id, product_id, quantity)SELECT (SELECT id FROM orders WHERE customer_id = $1), product_id, quantity FROM carts_products WHERE cart_id = $2', [custid, cartid]);
+            await pool.query('INSERT INTO orders_products(order_id, product_id, quantity)SELECT (SELECT id FROM orders WHERE id = $1), product_id, quantity FROM carts_products WHERE cart_id = $2', [orderId, cartid]);
             // you cannot use RETURNING * in INSERT with a SELECT!
         } catch (err) {
             throw new Error(err);

@@ -1,7 +1,9 @@
 
 const OrderModel = require('../models/order-model');
+const CartService = require('./cart-service');
 
 const OrderModelInstance = new OrderModel;
+const CartServiceInstance = new CartService;
 
 class OrderService {
 
@@ -9,10 +11,11 @@ class OrderService {
         try {
             const newOrder = await OrderModelInstance.addToOrders(custid, cartid);
             if(!newOrder) return null;
-            await OrderModelInstance.addToOrdersProducts(custid, cartid);
-            const orderCheck = OrderModelInstance.getSingleOrder(custid, newOrder.id)
+            await OrderModelInstance.addToOrdersProducts(custid, cartid, newOrder.id);
+            const orderCheck = await OrderModelInstance.getSingleOrder(custid, newOrder.id);
             if(!orderCheck) return null;
-            return newOrder;
+            const deleteCart = await CartServiceInstance.deleteCart(custid);
+            deleteCart ? newOrder : null;
         } catch (err) {
             throw(err);
         }

@@ -39,8 +39,7 @@ class CartService {
             if(!this.checkCart(custid)) return null;
             await CartModelInstance.deleteCart(custid);
             const data = await CartModelInstance.checkExistingCart(custid);
-            return data;
-
+            data ? false : true;
         } catch (err) {
             throw(err);
         }
