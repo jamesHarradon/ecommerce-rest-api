@@ -55,9 +55,9 @@ class CustomerModel {
 
     async createContact(data) {
         try {
-            const { address_line1, address_line2, town, city, county, post_code, phone, email} = data;
-            const newContact = await pool.query('INSERT INTO contacts (address_line1, address_line2, town, city, county, post_code, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [address_line1, address_line2, town, city, county, post_code, phone, email]);
-            return newContact.rows?.length ? newContact.rows[0] : null;
+            const { address_line1, address_line2, town_city, county, post_code, phone, email} = data;
+            const newContact = await pool.query('INSERT INTO contacts (address_line1, address_line2, town_city, county, post_code, phone, email) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [address_line1, address_line2, town_city, county, post_code, phone, email]);
+            return newContact.rows?.length ? [newContact.rows[0]] : null;
         } catch (err) {
             throw new Error(err);
         }
@@ -93,7 +93,7 @@ class CustomerModel {
 
     async getCustomerData(custid) {
         try {
-            const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town, city, county, post_code, phone, customers.email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);
+            const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town_city, county, post_code, phone, customers.email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);
             return data.rows?.length ? [data.rows[0]] : null;
         } catch (err) {
             throw new Error(err);

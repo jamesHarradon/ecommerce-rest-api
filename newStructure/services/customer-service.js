@@ -47,7 +47,7 @@ class CustomerService {
     async createContact(custid, data) {
         try {
             const contactData = await CustomerModelInstance.createContact(data);
-            await CustomerModelInstance.addContactIdForCustomer(custid, contactData.id);
+            await CustomerModelInstance.addContactIdForCustomer(custid, contactData[0].id);
             return contactData;
             
         } catch (err) {

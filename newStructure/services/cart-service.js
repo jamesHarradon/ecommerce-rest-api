@@ -72,10 +72,10 @@ class CartService {
     async addNewProductToCart(custid, cartid, productid) {
         try {
             if(!this.checkCart(custid) || !this.checkProduct(custid, productid)) return null;
-            const product = await CartModelInstance.addNewProductToCart(custid, cartid, productid);
-            if (product) await CartModelInstance.updateTotalCost(cartid);
-            return product;
-
+            await CartModelInstance.addNewProductToCart(custid, cartid, productid);
+            await CartModelInstance.updateTotalCost(cartid);
+            const cartProducts = await CartModelInstance.getAllProductsFromCart(cartid);
+            return cartProducts;
         } catch (err) {
             throw(err);
         }
@@ -105,7 +105,12 @@ class CartService {
             await CartModelInstance.deleteProductFromCart(custid, cartid, productid);
             await CartModelInstance.updateTotalCost(cartid);
             const data = await CartModelInstance.checkExistingProductInCart(custid, productid);
-            return data;
+            if (!data) {
+                const cartProducts = await CartModelInstance.getAllProductsFromCart(cartid);
+                return cartProducts;
+            } else {
+                return data;
+            }
         } catch (err) {
             throw(err);   
         }
