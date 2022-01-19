@@ -97,4 +97,6 @@ cartRouter.delete('/products/deleteAll/:customerId/:cartId', isAuthorized, async
     }
 })
 
+
+
 module.exports = cartRouter;

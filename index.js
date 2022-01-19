@@ -3,6 +3,8 @@ const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const passport = require('passport')
 require('./config/passport')
@@ -54,7 +56,12 @@ app.use(express.json());
 app.use(cors(origin)); // only needed when not using proxy server
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(passport.initialize())
+app.use(passport.initialize());
+
+// app.use('/api', createProxyMiddleware({
+//     target: process.env.CLIENT_URL,
+//     changeOrigin: true
+// }))
 
 app.use('/api/auth', authRouter);
 app.use('/api/customer', customerRouter);

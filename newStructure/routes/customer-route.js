@@ -14,10 +14,11 @@ customerRouter.post('/register', async (req, res, next) => {
         if(response) {
             let secret = process.env.TOKEN_SECRET;
             let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
-            res.cookie('jwt', token, {
+            res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 30,
-                //secure: true - use for https only
+                sameSite: 'lax',
+                secure: false
             }).sendStatus(200);
         } else {
             //response above is null when the users email they are trying to register is already in the database.

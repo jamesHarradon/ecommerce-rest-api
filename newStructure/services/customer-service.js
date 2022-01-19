@@ -30,7 +30,7 @@ class CustomerService {
         }
     }
 
-    async googleRegister(data) {
+    async googleLoginRegister(data) {
         try {
             const user = await CustomerModelInstance.checkExistingGoogleId(data.google_id);
             if(user) {

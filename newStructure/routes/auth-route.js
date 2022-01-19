@@ -2,39 +2,49 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const isAuthorized = require('../../modules/isAuthorized');
-const CustomerModel = require('../models/customer-model');
+const CustomerService = require('../services/customer-service');
 const AuthService = require('../services/auth-service');
 
 
 const AuthServiceInstance = new AuthService;
-const CustomerModelInstance = new CustomerModel;
+const CustomerServiceInstance = new CustomerService;
 
 const authRouter = express.Router();
 
-authRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-authRouter.get('/google/redirect', passport.authenticate('google', {failureMessage: true }), async (req, res, next) => {
+authRouter.post('/google/login/success', async (req, res, next) => {
     try {
-        res.redirect('http://localhost:3000/');
+        const { first_name, last_name, email, google_id } = req.body;
+        let bodyData = {first_name: first_name, last_name: last_name, email: email, password: null, google_id: google_id};
+        // finds cust id in db from google id or creates new account and gets cust id to put in cookie
+        const userData = await CustomerServiceInstance.googleLoginRegister(bodyData); 
+    
+        let secret = process.env.TOKEN_SECRET;
+        let token = jwt.sign({id: userData.id }, secret, { algorithm: 'HS256', expiresIn: "1800s"});
+        res.cookie('jwt_ukulele', token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 30,
+        sameSite: 'lax',
+        secure: false
+    }).json(userData.id);
     } catch (err) {
-        next(err);
+        console.log(err);
     }
 });
+
 
 
 //customer login
 authRouter.post('/login', isAuthorized, async (req, res, next) => {
     try {
-        
         const response = await AuthServiceInstance.login(req.body);
         if(response) {
             let secret = process.env.TOKEN_SECRET;
             let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
-            res.cookie('jwt', token, {
+            res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 30,
-                //sameSite: look into this
-                //secure: true - use for https only
+                sameSite: 'lax',
+                secure: false
             })
             res.json(response.id);
         } else {
@@ -60,7 +70,7 @@ authRouter.put('/change-password/:customerId', isAuthorized, async (req, res, ne
 
 //customer logout
 authRouter.post('/logout', (req, res, next) => {
-    res.clearCookie('jwt').sendStatus(200);
+    res.clearCookie('jwt_ukulele').sendStatus(200);
 })
 
 module.exports = authRouter;

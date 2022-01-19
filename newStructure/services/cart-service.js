@@ -93,7 +93,9 @@ class CartService {
                 return;
             }
             if(product) await CartModelInstance.updateTotalCost(cartid);
-            return product;
+            const cartProducts = await CartModelInstance.getAllProductsFromCart(cartid);
+            return cartProducts;
+            
         } catch (err) {
             throw(err);
         }

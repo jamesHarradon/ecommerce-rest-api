@@ -8,9 +8,9 @@ class CustomerModel {
     
     async createLogin(data) {
         try {
-            const { first_name, last_name, email, password } = data;
+            const { first_name, last_name, email, password, google_id } = data;
             const date = this.getDate();
-            const newLogin = await pool.query('INSERT INTO customers (email, password, date_created, contact_id, first_name, last_name) VALUES ($1, $2, $3, null, $4, $5) RETURNING email, date_created, contact_id, first_name, last_name ', [email, password, date, first_name, last_name]);
+            const newLogin = await pool.query('INSERT INTO customers (password, date_created, contact_id, first_name, last_name, payment_id, email, google_id) VALUES ($1, $2, null, $3, $4, null, $5, $6) RETURNING id, first_name, last_name, email, google_id', [password, date, first_name, last_name, email, google_id]);
             return newLogin.rows[0];
         } catch (err) {
             throw new Error(err);

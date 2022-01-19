@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 	id SERIAL PRIMARY KEY, 
 	address_line1 VARCHAR(100),
 	address_line2 VARCHAR(100),
-	town VARCHAR(100),
-	city VARCHAR(100),
+	town_city VARCHAR(100),
 	county VARCHAR(100),
 	post_code VARCHAR(10),
 	phone VARCHAR(11),
@@ -16,7 +15,6 @@ CREATE TABLE IF NOT EXISTS payment_details (
 	card_number CHAR(16),
 	expiry_date DATE,
 	name_on_card VARCHAR(100),
-	security_code CHAR(3)
 );
 
 CREATE TABLE IF NOT EXISTS customers (
@@ -27,7 +25,8 @@ CREATE TABLE IF NOT EXISTS customers (
 	contact_id INTEGER,
 	first_name VARCHAR(100),
 	last_name VARCHAR(100),
-	payment_id INTEGER
+	payment_id INTEGER,
+	google_id VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS orders (
