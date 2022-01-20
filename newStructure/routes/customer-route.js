@@ -19,7 +19,8 @@ customerRouter.post('/register', async (req, res, next) => {
                 maxAge: 1000 * 60 * 30,
                 sameSite: 'lax',
                 secure: false
-            }).sendStatus(200);
+            });
+            res.json(response.id);
         } else {
             //response above is null when the users email they are trying to register is already in the database.
             res.status(400).send();
@@ -49,6 +50,16 @@ customerRouter.put('/contact/data/amend/:customerId', isAuthorized, async (req, 
         next(err);
     }
 });
+
+//get customer email 
+customerRouter.get('/data/email/:customerId', isAuthorized, async (req, res, next) => {
+    try {
+        const response = await CustomerServiceInstance.getCustomerEmail(req.params.customerId);
+        res.json(response);
+    } catch (err) {
+        next(err);   
+    }
+})
 
 //get all personal data for customer
 customerRouter.get('/data/:customerId', isAuthorized, async (req, res, next) => {

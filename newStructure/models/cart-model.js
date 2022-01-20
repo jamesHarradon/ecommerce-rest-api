@@ -62,9 +62,9 @@ class CartModel {
         }
     }
 
-    async addNewProductToCart(custid, cartid, productid) {
+    async addNewProductToCart(custid, cartid, productid, quantity) {
         try {
-            const data = await pool.query('INSERT INTO carts_products(cart_id, product_id, quantity) VALUES ($1, $2, 1) RETURNING *', [cartid, productid]);
+            const data = await pool.query('INSERT INTO carts_products(cart_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *', [cartid, productid, quantity]);
             return data.rows?.length ? data.rows[0] : null;
         } catch (err) {
             throw new Error(err);

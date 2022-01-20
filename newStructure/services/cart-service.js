@@ -69,10 +69,10 @@ class CartService {
         }
     }
 
-    async addNewProductToCart(custid, cartid, productid) {
+    async addNewProductToCart(custid, cartid, productid, quantity) {
         try {
             if(!this.checkCart(custid) || !this.checkProduct(custid, productid)) return null;
-            await CartModelInstance.addNewProductToCart(custid, cartid, productid);
+            await CartModelInstance.addNewProductToCart(custid, cartid, productid, quantity);
             await CartModelInstance.updateTotalCost(cartid);
             const cartProducts = await CartModelInstance.getAllProductsFromCart(cartid);
             return cartProducts;

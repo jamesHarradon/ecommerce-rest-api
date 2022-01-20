@@ -91,6 +91,15 @@ class CustomerModel {
         }
     }
 
+    async getCustomerEmail(custid) {
+        try {
+            const email = await pool.query('SELECT email FROM customers WHERE id = $1', [custid]);
+            return email.rows?.length ? email.rows[0] : null;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
     async getCustomerData(custid) {
         try {
             const data = await pool.query('SELECT customers.id as customer_id, contacts.id as contact_id, payment_id, first_name, last_name, address_line1, address_line2, town_city, county, post_code, phone, customers.email FROM customers JOIN contacts ON customers.contact_id = contacts.id WHERE customers.id = $1', [custid]);

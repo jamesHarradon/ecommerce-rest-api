@@ -67,7 +67,15 @@ class CustomerService {
             throw(err);
         }
     }
-
+    
+    async getCustomerEmail(custid) {
+        try {
+            const data = CustomerModelInstance.getCustomerEmail(custid);
+            return data;
+        } catch (err) {
+            throw(err);
+        }
+    }
 
     async getCustomerData(custid) {
         try {

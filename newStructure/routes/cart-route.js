@@ -48,9 +48,9 @@ cartRouter.get('/products/:customerId', isAuthorized, async (req, res, next) => 
 });
 
 //add a new product to cart
-cartRouter.post('/products/add/:customerId/:cartId/:productId', isAuthorized, async (req, res, next) => {
+cartRouter.post('/products/add/:customerId/:cartId/:productId/:quantity', isAuthorized, async (req, res, next) => {
     try {
-        const response = await CartServiceInstance.addNewProductToCart(req.params.customerId, req.params.cartId, req.params.productId);
+        const response = await CartServiceInstance.addNewProductToCart(req.params.customerId, req.params.cartId, req.params.productId, req.params.quantity);
         res.json(response);
     } catch (err) {
         next(err);
