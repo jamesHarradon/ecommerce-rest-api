@@ -22,7 +22,7 @@ authRouter.post('/google/login/success', async (req, res, next) => {
         let token = jwt.sign({id: userData.id }, secret, { algorithm: 'HS256', expiresIn: "1800s"});
         res.cookie('jwt_ukulele', token, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 30,
+        maxAge: 1000 * 60 * 60,
         sameSite: 'lax',
         secure: false
     }).json(userData.id);
@@ -34,7 +34,7 @@ authRouter.post('/google/login/success', async (req, res, next) => {
 
 
 //customer login
-authRouter.post('/login', isAuthorized, async (req, res, next) => {
+authRouter.post('/login', async (req, res, next) => {
     try {
         const response = await AuthServiceInstance.login(req.body);
         if(response) {
@@ -42,7 +42,7 @@ authRouter.post('/login', isAuthorized, async (req, res, next) => {
             let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
             res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 30,
+                maxAge: 1000 * 60 * 60,
                 sameSite: 'lax',
                 secure: false
             })

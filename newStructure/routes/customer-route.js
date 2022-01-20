@@ -16,7 +16,7 @@ customerRouter.post('/register', async (req, res, next) => {
             let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
             res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
-                maxAge: 1000 * 60 * 30,
+                maxAge: 1000 * 60 * 60,
                 sameSite: 'lax',
                 secure: false
             });

@@ -1,10 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const isAuthorized = (req, res, next) => {
-    //this is for first login 
-    if(!req.cookies.jwt_ukulele && req.path === '/login') {
-        return next();
-    } 
+    
     try {
         const token = req.cookies.jwt_ukulele;
         let secret = process.env.TOKEN_SECRET;
@@ -15,7 +12,7 @@ const isAuthorized = (req, res, next) => {
             error.status = 401;
             throw error;
         }
-        req.userid = data.id
+        req.customerId = data.id
         req.isAuthorized = true;
         return next();
         
