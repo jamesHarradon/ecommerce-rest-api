@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const isAuthorized = async (req, res, next) => {
+const isAuthorized = (req, res, next) => {
     //this is for first login 
     if(!req.cookies.jwt_ukulele && req.path === '/login') {
         return next();

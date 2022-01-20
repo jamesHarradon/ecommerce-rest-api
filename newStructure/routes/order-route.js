@@ -38,9 +38,10 @@ orderRouter.get('/recent/:customerId', isAuthorized, async (req, res, next) => {
 });
 
 //gets single order
-orderRouter.get('/:customerId/:cartId', isAuthorized, async (req, res, next) => {
+orderRouter.get('/single/:customerId/:orderId', isAuthorized, async (req, res, next) => {
     try {
-        const response = await OrderServiceInstance.getSingleOrder(req.params.customerId, req.params.cartId);
+        // cartId becomes orderId when the cart is processed
+        const response = await OrderServiceInstance.getSingleOrder(req.params.customerId, req.params.orderId);
         res.json(response);
     } catch (err) {
         next(err);

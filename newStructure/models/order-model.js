@@ -55,8 +55,8 @@ class OrderModel {
 
     async getSingleOrder(custid, orderid) {
         try {
-            const orderById = await pool.query('SELECT product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [orderid, custid]);
-            return orderById.rows?.length ? orderById.rows[0] : null;
+            const orderById = await pool.query('SELECT product_id, product_name, image, price_per_unit, quantity, price_per_unit * quantity AS total_cost FROM orders_products JOIN products ON products.id = orders_products.product_id JOIN orders ON orders.id = orders_products.order_id WHERE order_id = $1 AND orders.customer_id = $2;', [orderid, custid]);
+            return orderById.rows?.length ? orderById.rows : null;
         } catch (err) {
             throw new Error(err);
         }
