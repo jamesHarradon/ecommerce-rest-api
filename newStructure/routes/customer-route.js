@@ -17,8 +17,8 @@ customerRouter.post('/register', async (req, res, next) => {
             res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60,
-                sameSite: 'lax',
-                secure: false
+                sameSite: isProduction ? 'none' : 'lax',
+                secure: isProduction ? true : false,
             });
             res.json(response.id);
         } else {

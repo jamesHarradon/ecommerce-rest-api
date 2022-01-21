@@ -11,6 +11,8 @@ const CustomerServiceInstance = new CustomerService;
 
 const authRouter = express.Router();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 authRouter.post('/google/login/success', async (req, res, next) => {
     try {
         const { first_name, last_name, email, google_id } = req.body;
@@ -23,8 +25,8 @@ authRouter.post('/google/login/success', async (req, res, next) => {
         res.cookie('jwt_ukulele', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
-        sameSite: 'lax',
-        secure: false
+        sameSite: isProduction ? 'none' : 'lax',
+        secure: isProduction ? true : false,
     }).json(userData.id);
     } catch (err) {
         console.log(err);
@@ -43,8 +45,8 @@ authRouter.post('/login', async (req, res, next) => {
             res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60,
-                sameSite: 'lax',
-                secure: false
+                sameSite: isProduction ? 'none' : 'lax',
+                secure: isProduction ? true : false,
             })
             res.json(response.id);
         } else {
