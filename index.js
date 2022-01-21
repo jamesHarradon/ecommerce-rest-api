@@ -47,7 +47,8 @@ app.use(compression());
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 
 app.use(express.json());
-app.use(cors(origin)); // only needed when not using proxy server
+app.use(cors(origin)); 
+app.options('*', cors(origin));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
