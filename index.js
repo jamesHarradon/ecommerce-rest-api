@@ -61,7 +61,7 @@ app.use('/api/checkout', checkoutRouter);
 
 app.use((err, req, res, next) => {
     const { message, status } = err;
-    res.status(status || 500).json(message);
+    res.status(status || 500).send(message);
 })
 
 const PORT = process.env.PORT || 4000;
