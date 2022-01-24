@@ -27,6 +27,8 @@ class CartService {
 
     async createCart(custid) {
         try {
+            const cart = await CartModelInstance.checkExistingCart(custid);
+            if (cart) return cart;
             const newCart = await CartModelInstance.createCart(custid);
             return newCart;
         } catch (err) {
