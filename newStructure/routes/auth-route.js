@@ -21,7 +21,7 @@ authRouter.post('/google/login/success', async (req, res, next) => {
         const userData = await CustomerServiceInstance.googleLoginRegister(bodyData); 
     
         let secret = process.env.TOKEN_SECRET;
-        let token = jwt.sign({id: userData.id }, secret, { algorithm: 'HS256', expiresIn: "1800s"});
+        let token = jwt.sign({id: userData.id }, secret, { algorithm: 'HS256', expiresIn: "3600s"});
         res.cookie('jwt_ukulele', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60,
@@ -41,7 +41,7 @@ authRouter.post('/login', async (req, res, next) => {
         const response = await AuthServiceInstance.login(req.body);
         if(response) {
             let secret = process.env.TOKEN_SECRET;
-            let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "1800s"});
+            let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "3600s"});
             res.cookie('jwt_ukulele', token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60,
