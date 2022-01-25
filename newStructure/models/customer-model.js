@@ -26,6 +26,7 @@ class CustomerModel {
         }
     }
 
+
     async checkExistingId(id) {
         try {
             const data = await pool.query('SELECT * FROM customers WHERE id = $1', [id]);
