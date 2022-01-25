@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+const isProduction = process.env.NODE_ENV === 'production';
+const url = isProduction ? process.env.CLIENT_URL : 'http://localhost:3000';
+
 const isAuthorized = (req, res, next) => {
     
     try {

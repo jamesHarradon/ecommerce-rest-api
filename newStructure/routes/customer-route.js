@@ -7,11 +7,15 @@ const CustomerServiceInstance = new CustomerService;
 
 const customerRouter = express.Router();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 //register new customer
 customerRouter.post('/register', async (req, res, next) => {
     try {
         const response = await CustomerServiceInstance.register(req.body);
+        
         if(response) {
+            
             let secret = process.env.TOKEN_SECRET;
             let token = jwt.sign({id: response.id}, secret, { algorithm: 'HS256', expiresIn: "3600s"});
             res.cookie('jwt_ukulele', token, {
@@ -19,7 +23,7 @@ customerRouter.post('/register', async (req, res, next) => {
                 maxAge: 1000 * 60 * 60,
                 sameSite: isProduction ? 'none' : 'lax',
                 secure: isProduction ? true : false,
-            });
+            })
             res.json(response.id);
         } else {
             //response above is null when the users email they are trying to register is already in the database.
