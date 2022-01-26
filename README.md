@@ -2,9 +2,11 @@
 Node/Express REST API to provide typical functionality found in an ecommerce website.  Users can create accounts, view products, add products to a cart, and place/view orders.
 
 ## Running and Testing
-Go to [https://jims-ecommerce-rest-api.herokuapp.com/api-docs/](https://jims-ecommerce-rest-api.herokuapp.com/api-docs/) to test out using the Swagger UI.
 
-**Using the Swagger UI you can test the API using Brad Pitt's fictional account, customerid 2, username: pitty60 password: fightclub1 or create your own :)**
+Visit the live site at [https://jims-ukulele-shop.netlify.app](https://jims-ukulele-shop.netlify.app)
+
+Or go to [https://jims-ecommerce-rest-api.herokuapp.com/api-docs/](https://jims-ecommerce-rest-api.herokuapp.com/api-docs/) to test out using the Swagger UI.
+
 
 To run locally, `npm install`, then `npm run start`
 
