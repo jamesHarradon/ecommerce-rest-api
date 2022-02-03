@@ -46,7 +46,7 @@ class CartModel {
 
     async getAllProductsFromCart(cartid) {
         try {
-            const data = await pool.query('SELECT product_id, product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1', [cartid]);
+            const data = await pool.query('SELECT product_id, product_name, price_per_unit, quantity, image FROM carts_products JOIN products ON products.id = carts_products.product_id WHERE cart_id = $1 ORDER BY 1', [cartid]);
             return data.rows?.length ? data.rows : [];
         } catch (err) {
             throw new Error(err);
@@ -73,7 +73,7 @@ class CartModel {
     
     async incrementProduct(cartid, productid) {
         try {
-            const data = await pool.query('UPDATE carts_products SET quantity = quantity + 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartid, productid]);
+            const data = await pool.query('with updated as (UPDATE carts_products SET quantity = quantity + 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *) SELECT * FROM updated ORDER BY product_id', [cartid, productid]);
             return data.rows?.length ? data.rows[0] : null;
             
         } catch (err) {
@@ -83,7 +83,7 @@ class CartModel {
 
     async decrementProduct(cartid, productid) {
         try {
-            const data = await pool.query('UPDATE carts_products SET quantity = quantity - 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *', [cartid, productid]);
+            const data = await pool.query('with updated as (UPDATE carts_products SET quantity = quantity - 1 WHERE cart_id = $1 AND product_id = $2 RETURNING *) SELECT * FROM updated ORDER BY product_id', [cartid, productid]);
             return data.rows?.length ? data.rows[0] : null;
             
         } catch (err) {
