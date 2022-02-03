@@ -20,7 +20,7 @@ checkoutRouter.post('/:customerId', isAuthorized, async (req, res, next) => {
                         name: product.product_name,
                         images: [product.image]
                     },
-                    unit_amount: parseFloat(product.price_per_unit.split('').splice(1).join(''))*100    
+                    unit_amount: parseFloat(product.price_per_unit)*100    
                 },
                 quantity: product.quantity
             })),
