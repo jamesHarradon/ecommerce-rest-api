@@ -13,8 +13,8 @@ class PaymentModel {
 
     async createPaymentDetails(data) {
         try {
-            const { card_type, card_number, expiry_date, name_on_card, security_code } = data;
-            const payData = await pool.query('INSERT INTO payment_details (card_type, card_number, expiry_date, name_on_card, security_code) VALUES ($1, $2, $3, $4, $5) RETURNING *', [card_type, card_number, expiry_date, name_on_card, security_code]);
+            const { card_type, card_number, expiry_date, name_on_card} = data;
+            const payData = await pool.query('INSERT INTO payment_details (card_type, card_number, expiry_date, name_on_card, security_code) VALUES ($1, $2, $3, $4) RETURNING *', [card_type, card_number, expiry_date, name_on_card]);
             return payData.rows?.length ? payData.rows[0] : null;
 
         } catch (err) {
