@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS orders (
 	id SERIAL PRIMARY KEY,
 	customer_id INTEGER,
 	order_date TIMESTAMPTZ,
-	total_cost MONEY
+	total_cost NUMERIC(10,2)
 );
 
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     product_name VARCHAR(100),
-    price_per_unit MONEY,
+    price_per_unit NUMERIC(10,2),
     image VARCHAR(100),
 	description TEXT
 );
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS carts (
     id SERIAL PRIMARY KEY,
     customer_id INTEGER,
     created_date DATE,
-    total_cost MONEY
+    total_cost NUMERIC(10,2)
 );
 
 CREATE TABLE IF NOT EXISTS carts_products (
@@ -92,12 +92,12 @@ ADD FOREIGN KEY(product_id) REFERENCES products(id);
 
 -- insert products
 INSERT INTO products (product_name,price_per_unit, image, description) VALUES
-	 ('Tanglewood TUJ2CE Exotic Java Concert Ukulele', '£279.00','https://d1aeri3ty3izns.cloudfront.net/media/66/667864/1200/preview.jpg', 'Balanced Sparkle tone developed by solid koa top. Comfortable playing experience with concert cutaway body. Silky smooth playing experience delivered by a luscious rosewood fretboard. Delightful, amplified sound provided by Tanglewood electronics.'),
-	 ('Tanglewood Black Walnut Tiare Range Soprano ukulele','£55.00','https://mickleburgh.co.uk/wp-content/uploads/2021/06/cff6a6a424dd0c43c26a2f195ba3ff6a8b74bd3b.jpg', 'Soprano Size Ukulele Offers Sweet & Familiar Sounds. All Mahogany Top, Back & Sides Creates A Focused, Full Sound. Unique Okoume Neck Provides Bright Tones. Smallest Ukulele Size Makes It Ideal For Beginners & Travel. Attractive Natural Satin Finish & Tribal Rosette.'),
-	 ('Ibanez UICT10 Iceman Ukulele Black','£189.00','https://images.guitarguitar.co.uk/cdn/large/160/200325357678025f.jpg', E'Crafted from rich okoume and topped with spruce, this rock and roll tenor ukulele delivers a surprisingly complex tone for its size. Matched perfectly with an okoume neck, the purpleheart fingerboard ensures maximum playability thanks to its smooth action and speedy finish. Strung with nylon, this soulful ukulele is perfectly equipped to deliver a well-projected tone with plenty of clarity and earthy notes - however, when the big stage comes calling, you\'ve got a fully capable set of electronics at your disposal. Kitted out with premium onboard Ibanez AEQ2U electronics, complete with built-in tuner and EQ, you\'ll find these sophisticated electronics do a stellar job at representing the natural tones of your uke - perfect for any amplified situation. Complete with a padded gig bag, you\'ve got everything you need to rock up, plugin and play!'),
-	 ('Eno ET 33U Clip-On Ukulele Tuner','£10.53','https://m.media-amazon.com/images/I/71Bn8dnAZ2L._AC_SL1500_.jpg', 'Easy to use clip on tuner for ukulele. Clip onto head stock, play a string and the tuner displays the note played. Tune up or down to get the needle straight on the note for perfect tuning every time Suitable for adults and children. Can also be used chromatically for alternative tunings.'),
-	 ('Tiger Ukulele Strap Aztec Style - Adjustable Strap','£5.99','https://m.media-amazon.com/images/I/61Wvt7uoR-L._AC_SL1500_.jpg', E'The Tiger Ukulele Strap makes a great companion for your stringed instrument. Simply attach the strong plastic hook onto the side of your ukulele\'s sound hole and place the strap over your shoulder. Equipped to offer you both superior comfort and durability, the Tiger Ukulele Strap boasts a fully adjustable design to suit players of all sizes. It\'s remarkably strong hook is constructed from a tough plastic, providing you with the peace of mind that this ukulele strap can be relied upon. Featuring a stylish Aztec design, this colourful ukulele strap is visually appealing to both adults and children.'),
-	 ('Ukulele Tenor Premium Gigbag By Gear4music, Aztec', '£14.99', 'https://d1aeri3ty3izns.cloudfront.net/media/53/539740/1200/preview.jpg', E'Protect, love, care. These are all things you want to do for your instrument. And this Ukulele Tenor Premium Gigbag By Gear4music allows you to do, just that. It\'s designed specifically for tenor-sized ukuleles. And provides a snug, secure fit with dust and scratch-free protection. Perfect for a range of scenarios, this Premium Gigbag by Gear4music has thick padding for improved protection. So whether you\'re heading out on the school run, going to your next music lesson at college, or simply covering your uke when not in use. This Tenor Gigbag is your answer to a protected ukulele. It not only protects from everyday bumps and splashes but provides the durability needed for transporting your uke too. Plus, with a cool Aztec finish, you travel in true style.')
+	 ('Tanglewood TUJ2CE Exotic Java Concert Ukulele', '279.00','https://d1aeri3ty3izns.cloudfront.net/media/66/667864/1200/preview.jpg', 'Balanced Sparkle tone developed by solid koa top. Comfortable playing experience with concert cutaway body. Silky smooth playing experience delivered by a luscious rosewood fretboard. Delightful, amplified sound provided by Tanglewood electronics.'),
+	 ('Tanglewood Black Walnut Tiare Range Soprano ukulele','55.00','https://mickleburgh.co.uk/wp-content/uploads/2021/06/cff6a6a424dd0c43c26a2f195ba3ff6a8b74bd3b.jpg', 'Soprano Size Ukulele Offers Sweet & Familiar Sounds. All Mahogany Top, Back & Sides Creates A Focused, Full Sound. Unique Okoume Neck Provides Bright Tones. Smallest Ukulele Size Makes It Ideal For Beginners & Travel. Attractive Natural Satin Finish & Tribal Rosette.'),
+	 ('Ibanez UICT10 Iceman Ukulele Black','189.00','https://images.guitarguitar.co.uk/cdn/large/160/200325357678025f.jpg', E'Crafted from rich okoume and topped with spruce, this rock and roll tenor ukulele delivers a surprisingly complex tone for its size. Matched perfectly with an okoume neck, the purpleheart fingerboard ensures maximum playability thanks to its smooth action and speedy finish. Strung with nylon, this soulful ukulele is perfectly equipped to deliver a well-projected tone with plenty of clarity and earthy notes - however, when the big stage comes calling, you\'ve got a fully capable set of electronics at your disposal. Kitted out with premium onboard Ibanez AEQ2U electronics, complete with built-in tuner and EQ, you\'ll find these sophisticated electronics do a stellar job at representing the natural tones of your uke - perfect for any amplified situation. Complete with a padded gig bag, you\'ve got everything you need to rock up, plugin and play!'),
+	 ('Eno ET 33U Clip-On Ukulele Tuner','10.53','https://m.media-amazon.com/images/I/71Bn8dnAZ2L._AC_SL1500_.jpg', 'Easy to use clip on tuner for ukulele. Clip onto head stock, play a string and the tuner displays the note played. Tune up or down to get the needle straight on the note for perfect tuning every time Suitable for adults and children. Can also be used chromatically for alternative tunings.'),
+	 ('Tiger Ukulele Strap Aztec Style - Adjustable Strap','5.99','https://m.media-amazon.com/images/I/61Wvt7uoR-L._AC_SL1500_.jpg', E'The Tiger Ukulele Strap makes a great companion for your stringed instrument. Simply attach the strong plastic hook onto the side of your ukulele\'s sound hole and place the strap over your shoulder. Equipped to offer you both superior comfort and durability, the Tiger Ukulele Strap boasts a fully adjustable design to suit players of all sizes. It\'s remarkably strong hook is constructed from a tough plastic, providing you with the peace of mind that this ukulele strap can be relied upon. Featuring a stylish Aztec design, this colourful ukulele strap is visually appealing to both adults and children.'),
+	 ('Ukulele Tenor Premium Gigbag By Gear4music, Aztec', '14.99', 'https://d1aeri3ty3izns.cloudfront.net/media/53/539740/1200/preview.jpg', E'Protect, love, care. These are all things you want to do for your instrument. And this Ukulele Tenor Premium Gigbag By Gear4music allows you to do, just that. It\'s designed specifically for tenor-sized ukuleles. And provides a snug, secure fit with dust and scratch-free protection. Perfect for a range of scenarios, this Premium Gigbag by Gear4music has thick padding for improved protection. So whether you\'re heading out on the school run, going to your next music lesson at college, or simply covering your uke when not in use. This Tenor Gigbag is your answer to a protected ukulele. It not only protects from everyday bumps and splashes but provides the durability needed for transporting your uke too. Plus, with a cool Aztec finish, you travel in true style.')
 
 
 
